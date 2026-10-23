@@ -1,180 +1,703 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#050a08">
-<title>ZUKINPRO | Ghost Protocol</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>ZUKINPRO OS — AI Agent World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root{--g:#39ff88;--bg:#050a08;--panel:#0b1511;--line:#21432f;--muted:#9ab3a3}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#eaffef;font-family:Arial,sans-serif}
-header{padding:20px;border-bottom:1px solid var(--line);background:#08110c;position:sticky;top:0;z-index:5}
-.logo{font-size:23px;font-weight:900;letter-spacing:2px;color:var(--g)}
-.sub{font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:6px}
-nav{display:flex;gap:8px;overflow-x:auto;padding-top:17px}
-button{cursor:pointer;border:1px solid var(--line);background:#102017;color:var(--g);padding:11px;border-radius:7px;font-weight:bold}
-nav button{white-space:nowrap}
-button:hover{background:#193b27}
-main{max-width:1050px;margin:auto;padding:18px}
-.hero{padding:23px 18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#10291b,#07100c 65%,#12301d);position:relative;overflow:hidden}
-.tag{font-size:11px;color:var(--g);letter-spacing:2px}
-h1{font-size:clamp(27px,6vw,43px);margin:12px 0}
-p{line-height:1.5}
-.muted{color:var(--muted);font-size:13px}
-.city{height:175px;display:flex;align-items:end;justify-content:center;gap:5px;overflow:hidden;border-bottom:2px solid var(--g);margin:15px 0 20px;background:repeating-linear-gradient(90deg,transparent 0 38px,#123321 39px 40px),linear-gradient(#07130d,#0a1b10)}
-.building{width:13%;border:1px solid #28553a;background:repeating-linear-gradient(0deg,#10271a 0 12px,#39ff8825 13px 14px);box-shadow:0 0 12px #39ff8820}
-.b1{height:55%}.b2{height:85%}.b3{height:68%}.b4{height:100%}.b5{height:47%}.b6{height:77%}
-.section-title{color:var(--g);letter-spacing:2px;font-size:15px;margin:25px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.card{padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:11px;min-width:0}
-.agent{display:flex;gap:11px;align-items:center}
-.avatar{width:43px;height:43px;flex-shrink:0;display:grid;place-items:center;background:#163522;border:1px solid var(--g);border-radius:9px;font-size:23px}
-.agent h3{font-size:14px;margin:0 0 5px}
-.agent p{font-size:11px;color:var(--muted);margin:0}
-.status{font-size:10px;color:var(--g);margin-top:10px}
-.card button{width:100%;margin-top:12px;font-size:12px}
-input,select,textarea{width:100%;background:#050b07;border:1px solid var(--line);color:white;padding:12px;border-radius:7px;margin:6px 0 12px;font-size:14px}
-label{font-size:12px;color:var(--muted)}
-.action{width:100%;background:var(--g);color:#041008;border:0}
-#log{font-size:13px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
-.wide{margin-top:12px}
-footer{text-align:center;padding:25px;color:var(--muted);font-size:11px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.city{height:220px}}
+:root{--g:#18ffa0;--g2:rgba(24,255,160,.45);--c:#22e6ff;--panel:rgba(3,14,11,.92);--txt:#d8fff0;--dim:#7fb8a2;--warn:#ffc21a;--bad:#ff4d6d}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:#000;color:var(--txt);font-family:'Rajdhani',system-ui,sans-serif;font-size:15px}
+body{min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,rgba(24,255,160,.09),transparent),#000}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;text-align:left}
+input,select,textarea{font:inherit;color:var(--txt);background:rgba(0,0,0,.55);border:1px solid var(--g2);border-radius:6px;padding:8px 10px;outline:0;max-width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--g);box-shadow:0 0 8px rgba(24,255,160,.4)}
+select option{background:#04120e}
+.orb{font-family:Orbitron,sans-serif}.mono{font-family:'Share Tech Mono',monospace}
+.app{max-width:1500px;margin:0 auto;padding:8px;display:grid;gap:10px;grid-template-columns:190px minmax(0,1fr) 320px;grid-template-areas:"hd hd hd" "nav main side" "bot bot side"}
+.panel{background:var(--panel);border:1px solid var(--g2);border-radius:8px;box-shadow:0 0 16px rgba(24,255,160,.1) inset,0 0 10px rgba(24,255,160,.08)}
+/* header */
+#hd{grid-area:hd;display:grid;grid-template-columns:auto 1fr auto auto auto;align-items:center;gap:18px;padding:8px 16px;min-height:92px;overflow:hidden}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{filter:drop-shadow(0 0 8px var(--g))}
+.brand h1{font-family:Orbitron;font-weight:900;font-size:38px;letter-spacing:2px;color:var(--g);text-shadow:0 0 14px var(--g),0 0 30px rgba(24,255,160,.5);line-height:1}
+.brand p{letter-spacing:7px;font-size:13px;color:var(--g);margin-top:6px;opacity:.9}
+.tag{border-left:1px solid var(--g2);padding-left:16px;font-size:19px;color:#aef7d8;font-style:italic;line-height:1.25}
+.sys{font-family:'Share Tech Mono',monospace;font-size:13px;line-height:1.55;border-left:1px solid var(--g2);padding-left:16px}
+.sys b{color:var(--g);font-weight:400}
+.clock{text-align:center;border-left:1px solid var(--g2);padding-left:16px}
+.clock .t{font-family:Orbitron;font-size:36px;color:#eafff6;text-shadow:0 0 12px var(--g)}
+.clock .d{color:var(--dim);font-size:15px}
+.hart{position:relative;width:140px;height:84px}
+.hart canvas{position:absolute;inset:0;opacity:.55}
+.hart svg{position:absolute;right:0;bottom:-6px}
+/* nav */
+#nav{grid-area:nav;padding:10px 6px;display:flex;flex-direction:column;gap:2px;align-self:start}
+#nav button{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:6px;font-size:17px;font-weight:600;border-left:3px solid transparent;color:#cfeee2;width:100%}
+#nav button:hover{background:rgba(24,255,160,.07)}
+#nav button.on{background:linear-gradient(90deg,rgba(24,255,160,.22),transparent);border-left-color:var(--g);color:#fff;text-shadow:0 0 8px var(--g)}
+#nav svg{width:22px;height:22px;stroke:var(--g);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* main */
+#main{grid-area:main;min-width:0}
+#viewMap{padding:10px}
+.vh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.vh h2{font-family:Orbitron;font-size:25px;letter-spacing:1px}
+.vh p{color:#bff5de;font-size:16px}
+.live{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--g);color:var(--g);padding:3px 14px;border-radius:6px;font-family:Orbitron;font-size:13px;box-shadow:0 0 10px rgba(24,255,160,.4)}
+.live i{width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25}}
+#map{position:relative;aspect-ratio:1200/640;border-radius:6px;overflow:hidden;border:1px solid var(--g2);background:#02080a;touch-action:pan-y;user-select:none;cursor:grab}
+#map.flash{animation:flash .9s}
+@keyframes flash{30%{box-shadow:0 0 0 3px var(--g),0 0 40px var(--g)}}
+#mapInner{position:absolute;inset:0;transform-origin:0 0}
+#mapInner canvas{position:absolute;inset:0;width:100%;height:100%}
+.dist{position:absolute;font-family:Orbitron;font-size:10px;letter-spacing:2px;color:rgba(200,255,230,.55);transform:translate(-50%,-50%);pointer-events:none;text-shadow:0 0 6px #000}
+.mk{position:absolute;transform:translate(-50%,-100%) scale(var(--inv,1));transform-origin:50% 100%;cursor:pointer;z-index:5;filter:drop-shadow(0 0 8px var(--ac))}
+.mk .pin{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--ac);background:#000;margin:0 auto}
+.mk .pin svg{display:block;width:100%;height:100%}
+.mk .arr{width:0;height:0;margin:2px auto 0;border:9px solid transparent;border-top:13px solid var(--ac);border-bottom:0;animation:bob 1.1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+.mk .lbl{position:absolute;left:54px;top:4px;background:rgba(0,0,0,.78);border:1px solid var(--ac);border-radius:4px;padding:2px 9px;white-space:nowrap;line-height:1.15}
+.mk .lbl b{font-family:Orbitron;font-size:11px;color:#fff;display:block;letter-spacing:1px}.mk .lbl small{font-size:11px;color:#cfeee2}
+.mk.off{filter:grayscale(1) opacity(.55)}
+.mk.sel{z-index:9}
+.mk:hover .pin{box-shadow:0 0 16px var(--ac)}
+.heli{position:absolute;top:9%;left:-6%;width:46px;z-index:4;animation:heli 26s linear infinite;pointer-events:none}
+@keyframes heli{to{left:106%;top:16%}}
+.heli i{position:absolute;width:5px;height:5px;border-radius:50%;background:#f33;box-shadow:0 0 8px #f33;right:2px;top:12px;animation:pulse .8s infinite}
+.coord{position:absolute;right:8px;top:8px;border:1px solid var(--g2);background:rgba(0,0,0,.65);padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;text-align:right;z-index:6;pointer-events:none}
+.mctl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:4px;z-index:7}
+.mctl button{width:34px;height:34px;text-align:center;background:rgba(0,0,0,.75);border:1px solid var(--g2);border-radius:6px;font-size:18px;color:var(--g)}
+.mctl button:hover{background:rgba(24,255,160,.2)}
+.radar{position:absolute;left:8px;bottom:8px;width:118px;height:118px;border-radius:50%;border:1px solid var(--g2);background:radial-gradient(circle,rgba(24,255,160,.12),rgba(0,0,0,.8));z-index:6;overflow:hidden;pointer-events:none}
+.radar:before{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(24,255,160,.4),transparent 30%);animation:spin 4s linear infinite;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.radar i{position:absolute;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:var(--ac);box-shadow:0 0 6px var(--ac)}
+.mstat{position:absolute;left:136px;bottom:8px;background:rgba(0,0,0,.75);border:1px solid var(--g2);border-radius:6px;padding:7px 12px;font-size:15px;line-height:1.5;z-index:6;pointer-events:none}
+.mstat b{color:var(--g);font-weight:600}
+/* generic views */
+.view{padding:14px;min-height:560px}
+.grid{display:grid;gap:10px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:rgba(0,0,0,.4);border:1px solid rgba(24,255,160,.3);border-radius:8px;padding:12px}
+.card h3{font-family:Orbitron;font-size:14px;letter-spacing:1px;color:var(--g);margin-bottom:8px}
+.big{font-family:Orbitron;font-size:28px;color:#fff;text-shadow:0 0 10px var(--g)}
+.dim{color:var(--dim)}.sm{font-size:13px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sp{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--g);border-radius:6px;color:var(--g);font-weight:700;background:rgba(24,255,160,.07)}
+.btn:hover{background:rgba(24,255,160,.22);box-shadow:0 0 10px rgba(24,255,160,.4)}
+.btn.warn{border-color:var(--bad);color:var(--bad);background:rgba(255,77,109,.07)}
+.btn.xs{padding:3px 9px;font-size:13px}
+.list{display:flex;flex-direction:column;gap:6px}
+.li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(24,255,160,.05);border:1px solid rgba(24,255,160,.18);border-radius:6px}
+.bar{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac,var(--g)),#fff8);box-shadow:0 0 8px var(--ac,var(--g));transition:width .6s}
+.ok{color:var(--g)}.no{color:var(--bad)}
+.note{border:1px dashed var(--warn);color:#ffe49a;padding:8px 10px;border-radius:6px;font-size:14px}
+.stg{padding:2px 8px;border-radius:10px;font-size:12px;border:1px solid var(--warn);color:var(--warn)}
+/* side */
+#side{grid-area:side;display:flex;flex-direction:column;gap:10px;align-self:start}
+#side .panel{padding:12px 14px}
+.ph{font-family:Orbitron;font-size:14px;letter-spacing:1px;margin-bottom:8px}
+.al{display:grid;grid-template-columns:50px 1fr auto;gap:10px;align-items:center;width:100%;padding:8px 0;border-bottom:1px solid rgba(24,255,160,.15)}
+.al:last-child{border:0}.al:hover{background:rgba(24,255,160,.05)}
+.al .pt{width:50px;height:50px;border-radius:8px;overflow:hidden;border:1px solid var(--ac)}
+.al .pt svg{display:block;width:100%;height:100%}
+.al b{font-family:Orbitron;font-size:14px;letter-spacing:.5px}.al small{display:block;color:var(--dim);font-size:13px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--g)}.st i{width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 6px var(--g)}
+.st.idle{color:var(--warn)}.st.idle i{background:var(--warn);box-shadow:0 0 6px var(--warn)}.st.offline{color:var(--bad)}.st.offline i{background:var(--bad);box-shadow:0 0 6px var(--bad)}
+.bars{display:flex;gap:2px}.bars i{width:5px;height:10px;background:rgba(255,255,255,.12);border-radius:1px}.bars i.f{background:var(--g);box-shadow:0 0 5px var(--g)}
+.feed{display:flex;flex-direction:column;gap:9px}
+.fi{display:grid;grid-template-columns:14px 1fr;gap:10px;font-size:14px}.fi i{width:12px;height:12px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);margin-top:4px}.fi small{display:block;color:var(--dim);font-size:12px}
+.qa{display:flex;flex-direction:column;gap:8px}
+.qa button{display:flex;align-items:center;gap:14px;padding:11px 14px;border:1px solid var(--g2);border-radius:6px;font-size:17px;font-weight:600}
+.qa button:first-child{background:rgba(24,255,160,.16);border-color:var(--g);box-shadow:0 0 12px rgba(24,255,160,.3)}
+.qa button:hover{background:rgba(24,255,160,.25)}
+.qa svg{width:22px;height:22px;stroke:var(--g);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* bottom */
+#bot{grid-area:bot;display:flex;flex-direction:column;gap:10px;min-width:0}
+#cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.ac{padding:10px;cursor:pointer;border-color:color-mix(in srgb,var(--ac) 55%,transparent)}
+.ac:hover{box-shadow:0 0 16px color-mix(in srgb,var(--ac) 50%,transparent)}
+.ac .top{display:grid;grid-template-columns:46px 1fr;gap:8px;align-items:center}
+.ac .pt{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--ac)}.ac .pt svg{display:block;width:100%;height:100%}
+.ac b{font-family:Orbitron;font-size:12px;letter-spacing:.5px;display:block}.ac small{color:var(--dim);font-size:12px}
+.ac .tk{margin:10px 0 6px;font-size:15px;font-style:italic;min-height:22px}
+.ac .pr{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:6px}.ac .pr span{font-family:Orbitron;font-size:12px}
+.ph3{font-size:13px;line-height:1.5;min-height:60px}.ph3 div{color:var(--dim)}.ph3 div.d{color:#8fe9c5}.ph3 div.c{color:#fff}.ph3 b{display:inline-block;width:26px;color:var(--ac);font-family:Orbitron;font-size:11px}
+.ac .st{margin-top:6px}
+#botrow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px}
+#tlog{padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:10px;min-height:170px}
+#tlog h4{font-family:Orbitron;font-size:13px;color:var(--g);margin-bottom:6px;grid-column:1/-1}
+#lg{font-family:'Share Tech Mono',monospace;font-size:12.5px;line-height:1.5;max-height:130px;overflow:auto}
+#lg .L{color:#bfe9d6}.cm{color:var(--c)}.bd{color:var(--g)}.sn{color:#6aa8ff}.gm{color:#d98cff}.bz{color:var(--warn)}.sy{color:var(--warn)}
+.dream{font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.3;border-left:1px solid var(--g2);padding-left:18px;align-self:center;color:#dfffee}
+.dream:after{content:"_";animation:pulse 1s infinite;color:var(--g)}
+#scene{position:relative;overflow:hidden;min-height:170px}
+#scene svg{position:absolute;inset:0;width:100%;height:100%}
+#scene .tx{position:absolute;left:12px;top:10px;font-weight:700;font-size:15px;letter-spacing:1px;text-shadow:0 0 6px #000;line-height:1.2}
+#scene .lg{position:absolute;right:14px;bottom:8px;font-family:Orbitron;font-weight:900;color:var(--g);font-size:20px;text-shadow:0 0 10px var(--g);text-align:center;line-height:1}
+#scene .lg small{display:block;font-size:8px;letter-spacing:3px;color:#fff}
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:50;padding:12px}
+#modal.open{display:flex}
+#mBox{width:min(720px,100%);max-height:90vh;overflow:auto;padding:16px}
+#mBox .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+#mBox .mh h3{font-family:Orbitron;font-size:18px;color:var(--g);letter-spacing:1px}
+.x{width:34px;height:34px;border:1px solid var(--g2);border-radius:6px;text-align:center;font-size:20px;line-height:30px}
+.f{display:flex;flex-direction:column;gap:8px}.f label{font-size:13px;color:var(--dim)}
+.term{background:#000;border:1px solid var(--g2);border-radius:6px;padding:10px;height:340px;display:flex;flex-direction:column}
+#tOut{flex:1;overflow:auto;font-family:'Share Tech Mono',monospace;font-size:13px;white-space:pre-wrap;color:#bfe9d6}
+#tForm{display:flex;gap:8px;align-items:center;font-family:'Share Tech Mono',monospace;color:var(--g)}
+#tForm input{flex:1;border:0;background:none;box-shadow:none;font-family:inherit;color:#fff;padding:6px 0;min-width:0}
+.dh{display:grid;grid-template-columns:90px 1fr;gap:14px;margin-bottom:12px}
+.dh .pt{width:90px;height:90px;border-radius:12px;overflow:hidden;border:2px solid var(--ac)}.dh .pt svg{width:100%;height:100%;display:block}
+@media(max-width:1100px){
+ .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "nav" "main" "side" "bot"}
+ #hd{grid-template-columns:1fr auto;gap:10px}.tag,.hart{display:none}.sys{grid-column:1/-1;border:0;padding:0}.brand h1{font-size:26px}
+ .clock{border:0;padding:0}.clock .t{font-size:26px}
+ #nav{flex-direction:row;overflow-x:auto;padding:6px;position:sticky;top:0;z-index:20;background:#020a08;gap:4px;align-self:stretch}
+ #nav button{width:auto;white-space:nowrap;padding:9px 12px;font-size:15px;border-left:0;border-bottom:3px solid transparent}
+ #nav button.on{border-bottom-color:var(--g);background:rgba(24,255,160,.15)}
+ #side{align-self:stretch}
+ #cards{grid-template-columns:repeat(2,minmax(0,1fr))}#botrow{grid-template-columns:1fr}
+ .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mk .lbl{display:none}.mk .pin{width:34px;height:34px}.radar{width:78px;height:78px}.mstat{left:94px;font-size:12px;padding:4px 8px}
+ .heli{width:30px}.coord{font-size:9px}
+}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}#cards{grid-template-columns:1fr}.vh h2{font-size:19px}#tlog{grid-template-columns:1fr}.dream{border:0;padding:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">ZUKINPRO<span style="color:white"> OS</span></div>
-  <div class="sub">GHOST PROTOCOL // COMMAND CENTER</div>
-  <nav>
-    <button onclick="go('agents')">AI WORLD</button>
-    <button onclick="go('tasks')">TASKS</button>
-    <button onclick="go('modes')">OPERATIONS</button>
-  </nav>
-</header>
-
-<main>
-<section class="hero">
-  <div class="tag">● SYSTEM ONLINE // PROTOTYPE</div>
-  <h1>ENTER THE<br><span style="color:var(--g)">GHOST WORLD.</span></h1>
-  <p class="muted">One command center. Multiple agents. Your digital world, connected.</p>
-  <div class="city" aria-label="Abstract neon cyberpunk city">
-    <div class="building b1"></div><div class="building b2"></div>
-    <div class="building b3"></div><div class="building b4"></div>
-    <div class="building b5"></div><div class="building b6"></div>
+<noscript>ZUKINPRO OS needs JavaScript enabled.</noscript>
+<div class="app">
+ <header id="hd" class="panel">
+  <div class="brand">
+   <svg width="54" height="54" viewBox="0 0 80 80"><circle cx="40" cy="40" r="37" fill="#020a07" stroke="#18ffa0" stroke-width="2"/><path d="M40 12C26 12 19 24 19 40v28h42V40C61 24 54 12 40 12z" fill="#0a1512" stroke="#18ffa0" stroke-width="2"/><ellipse cx="40" cy="42" rx="11" ry="14" fill="#000"/><ellipse cx="35" cy="40" rx="3" ry="1.6" fill="#18ffa0"/><ellipse cx="45" cy="40" rx="3" ry="1.6" fill="#18ffa0"/></svg>
+   <div><h1>ZUKINPRO OS</h1><p>PLAY &nbsp;•&nbsp; BUILD &nbsp;•&nbsp; EARN &nbsp;•&nbsp; GROW</p></div>
   </div>
-  <button onclick="go('agents')">ENTER AI WORLD →</button>
-</section>
-
-<h2 class="section-title" id="agents">YOUR AI AGENTS</h2>
-<p class="muted">Select a character to assign a task or inspect its demo status.</p>
-
-<div class="grid">
-  <article class="card">
-    <div class="agent"><div class="avatar">👑</div><div><h3>COMMANDER</h3><p>Planning & coordination</p></div></div>
-    <div class="status" id="s0">● STANDBY</div>
-    <button onclick="choose('Commander','s0')">SELECT AGENT</button>
-  </article>
-  <article class="card">
-    <div class="agent"><div class="avatar">🛠️</div><div><h3>BUILDER</h3><p>Projects & development</p></div></div>
-    <div class="status" id="s1">● STANDBY</div>
-    <button onclick="choose('Builder','s1')">SELECT AGENT</button>
-  </article>
-  <article class="card">
-    <div class="agent"><div class="avatar">🛡️</div><div><h3>SENTINEL</h3><p>Authorized security checks</p></div></div>
-    <div class="status" id="s2">● STANDBY</div>
-    <button onclick="choose('Sentinel','s2')">SELECT AGENT</button>
-  </article>
-  <article class="card">
-    <div class="agent"><div class="avatar">🎮</div><div><h3>GAME MASTER</h3><p>Gaming & compatibility</p></div></div>
-    <div class="status" id="s3">● STANDBY</div>
-    <button onclick="choose('Game Master','s3')">SELECT AGENT</button>
-  </article>
-  <article class="card">
-    <div class="agent"><div class="avatar">💼</div><div><h3>BIZ AGENT</h3><p>Business workflows</p></div></div>
-    <div class="status" id="s4">● STANDBY</div>
-    <button onclick="choose('Biz Agent','s4')">SELECT AGENT</button>
-  </article>
+  <div class="tag">“Not just an OS…<br>&nbsp;&nbsp;&nbsp;&nbsp;A living ecosystem.”</div>
+  <div class="sys">SYSTEM &nbsp;: <b>ZUKINPRO OS</b><br>MODE &nbsp;&nbsp;&nbsp;: <b id="hMode">AI AGENT WORLD</b><br>USER &nbsp;&nbsp;&nbsp;: <b id="hUser">Feiz</b><br>STATUS &nbsp;: <b id="hStat">ONLINE</b></div>
+  <div class="clock"><div class="t" id="clkT">--:--</div><div class="d" id="clkD"></div></div>
+  <div class="hart"><canvas id="rain" width="140" height="84"></canvas><div id="hArt"></div></div>
+ </header>
+ 
+ <nav id="nav" class="panel" aria-label="Main navigation"></nav>
+ 
+ <main id="main">
+  <section id="viewMap" class="panel">
+   <div class="vh">
+    <div><h2>AI AGENT WORLD</h2><p>Your team. Your mission. Fully automated.</p></div>
+    <span class="live"><i></i>LIVE</span>
+   </div>
+   <div id="map">
+    <div id="mapInner">
+     <canvas id="cityCv"></canvas><canvas id="liveCv"></canvas>
+     <div class="dist" style="left:50%;top:40%">DOWNTOWN</div><div class="dist" style="left:26%;top:22%">VINEWOOD</div>
+     <div class="dist" style="left:77%;top:66%">PORT OF SANTOS</div><div class="dist" style="left:30%;top:74%">DEL PERRO</div>
+     <div class="heli"><svg viewBox="0 0 46 22"><path d="M12 12c0-4 8-6 16-5l8 2 6-2v3l-6 1c-2 5-10 7-18 5z" fill="#0b1512" stroke="#aef" stroke-width=".8"/><path d="M6 4h30" stroke="#aef" stroke-width="1.2"/></svg><i></i></div>
+     <div id="markers"></div>
+    </div>
+    <div class="coord">LOS SANTOS<br>33.9747° N<br>118.2426° W</div>
+    <div class="radar" id="radar"></div>
+    <div class="mstat">Active Agents : <b id="sA">5</b><br>Running Tasks : <b id="sT">7</b><br>Uptime : <b id="sU">99.4%</b></div>
+    <div class="mctl"><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="zreset" aria-label="Reset view">⌖</button></div>
+   </div>
+  </section>
+  <section id="viewOther" class="panel view" hidden></section>
+ </main>
+ 
+ <aside id="side">
+  <div class="panel"><div class="ph">ACTIVE AGENTS (<span id="sCnt">5/5</span>)</div><div id="alist"></div></div>
+  <div class="panel"><div class="ph">RECENT ACTIVITY</div><div class="feed" id="feed"></div></div>
+  <div class="panel"><div class="ph">QUICK ACTIONS</div>
+   <div class="qa">
+    <button data-act="assign"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Assign Task</button>
+    <button data-act="viewmap"><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>View Map</button>
+    <button data-act="logs"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg>Agent Logs</button>
+    <button data-act="term"><svg viewBox="0 0 24 24"><path d="M4 6l6 6-6 6M13 18h7"/></svg>System Terminal</button>
+   </div>
+  </div>
+ </aside>
+ 
+ <div id="bot">
+  <div id="cards"></div>
+  <div id="botrow">
+   <div id="tlog" class="panel"><h4>ZUKINPRO OS // AI AGENT WORLD</h4><div id="lg"></div><div class="dream">DREAM.<br>PLAN.<br>BUILD.<br>EXECUTE.<br>ZUKINPRO.</div></div>
+   <div id="scene" class="panel">
+    <svg viewBox="0 0 460 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+     <defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1045"/><stop offset=".5" stop-color="#d9476a"/><stop offset="1" stop-color="#ffb347"/></linearGradient><radialGradient id="sun"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient></defs>
+     <rect width="460" height="200" fill="url(#sk)"/>
+     <circle cx="300" cy="112" r="60" fill="url(#sun)"/><circle cx="300" cy="112" r="26" fill="#ffd27a"/>
+     <path d="M0 128V108h16V86h12v22h10V66h14v42h12V94h18v34h12V80h16v48h12V98h18v30h14V74h12v54h16V92h20v36h14V84h14v44h16V100h18v28h12V90h14v38h20V104h20v24z" fill="#1a0b2a"/>
+     <rect y="128" width="460" height="22" fill="#6b2a6e" opacity=".7"/>
+     <g stroke="#120618" stroke-width="3" fill="none"><path d="M360 150V70M360 70q-18-12-34-6M360 70q18-14 34-6M360 70q-10-22-26-24M360 70q14-22 30-22"/><path d="M420 150V88M420 88q-14-10-28-4M420 88q14-12 28-4"/></g>
+     <path d="M0 200V150h460v50z" fill="#0b0b12"/>
+     <path d="M-20 200L190 150h80l210 50z" fill="#15151f"/>
+     <path d="M230 150V200M205 150L150 200M255 150L310 200" stroke="#ffd27a" stroke-width="2" stroke-dasharray="8 8" opacity=".7"/>
+     <g transform="translate(150 118)">
+      <ellipse cx="80" cy="76" rx="84" ry="7" fill="#000" opacity=".6"/>
+      <path d="M8 66c0-18 6-28 20-34 14-8 40-12 52-12s38 4 52 12c14 6 20 16 20 34v8H8z" fill="#c21a3a"/>
+      <path d="M32 34c12-8 34-12 48-12s36 4 48 12l-8 14H40z" fill="#0b1018"/>
+      <path d="M28 56h104v8H28z" fill="#8f1229"/>
+      <rect x="14" y="56" width="26" height="8" rx="2" fill="#ff2a4a"/><rect x="120" y="56" width="26" height="8" rx="2" fill="#ff2a4a"/>
+      <rect x="14" y="56" width="26" height="8" rx="2" fill="none" stroke="#ff7a8a" stroke-width="1"/>
+      <rect x="64" y="64" width="32" height="9" rx="2" fill="#e8e8ee"/><rect x="2" y="70" width="156" height="6" rx="3" fill="#111"/>
+      <rect x="6" y="72" width="30" height="18" rx="4" fill="#050505"/><rect x="124" y="72" width="30" height="18" rx="4" fill="#050505"/>
+     </g>
+    </svg>
+    <div class="tx">SAME CITY.<br>DIFFERENT MISSION.</div>
+    <div class="lg">ZUKINPRO<small>AI AGENT WORLD</small></div>
+   </div>
+  </div>
+ </div>
 </div>
-
-<section id="tasks" class="card wide">
-  <h2 class="section-title">MISSION CONTROL</h2>
-  <p class="muted">Choose an agent, describe the mission, then assign it.</p>
-  <label for="agent">ASSIGNED AGENT</label>
-  <select id="agent">
-    <option>Commander</option><option>Builder</option>
-    <option>Sentinel</option><option>Game Master</option>
-    <option>Biz Agent</option>
-  </select>
-  <label for="mission">MISSION DETAILS</label>
-  <textarea id="mission" rows="3" placeholder="Example: Plan my first livestream..."></textarea>
-  <button class="action" onclick="assign()">ASSIGN MISSION</button>
-  <h3 style="font-size:13px">MISSION LOG</h3>
-  <div id="log" aria-live="polite">No missions assigned yet.</div>
-</section>
-
-<h2 class="section-title" id="modes">OPERATION ZONES</h2>
-<div class="grid">
-  <div class="card"><h3>🎮 Gaming</h3><p class="muted">Game discovery and setup.</p><button onclick="zone('Gaming')">OPEN ZONE</button></div>
-  <div class="card"><h3>📡 Streaming</h3><p class="muted">IRL, Twitch and live creator workflows.</p><button onclick="zone('Streaming')">OPEN ZONE</button></div>
-  <div class="card"><h3>🛡️ Cybersecurity</h3><p class="muted">Authorized security assessments.</p><button onclick="zone('Cybersecurity')">OPEN ZONE</button></div>
-  <div class="card"><h3>💻 Development</h3><p class="muted">Build projects and applications.</p><button onclick="zone('Development')">OPEN ZONE</button></div>
-  <div class="card"><h3>💼 Business</h3><p class="muted">Organize business workflows.</p><button onclick="zone('Business')">OPEN ZONE</button></div>
-  <div class="card"><h3>🤖 AI Lab</h3><p class="muted">Design future AI integrations.</p><button onclick="zone('AI Lab')">OPEN ZONE</button></div>
-</div>
-<footer>ZUKINPRO OS · GHOST PROTOCOL<br>EARLY PROTOTYPE — NOT A FULL OPERATING SYSTEM</footer>
-</main>
-
+ 
+<div id="modal" role="dialog" aria-modal="true"><div id="mBox" class="panel"><div class="mh"><h3 id="mTitle"></h3><button class="x" data-act="close" aria-label="Close">×</button></div><div id="mBody"></div></div></div>
+ 
 <script>
-let selected = "Commander";
-let missions = [];
-
-function go(id) {
-  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+(()=>{
+'use strict';
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd=(a,b)=>a+Math.random()*(b-a),rint=(a,b)=>Math.floor(rnd(a,b+1)),pick=a=>a[Math.floor(Math.random()*a.length)];
+const pad=n=>String(n).padStart(2,'0');
+const hhmm=ts=>{const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const ago=ts=>{const s=Math.max(0,(Date.now()-ts)/1000);if(s<60)return'just now';const m=Math.floor(s/60);if(m<60)return m+' min ago';return Math.floor(m/60)+' h ago'};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const copy=t=>{try{navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}};
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+ 
+/* ---------- agents ---------- */
+const AG=[
+ {id:'commander',name:'COMMANDER',role:'Manager / Strategy',color:'#1fe8ff',ic:'♛',L:'A',desc:'Planning, strategy and task delegation across the whole team.',phases:['Planning...','Assigning tasks...','Monitoring...'],pool:['Review weekly goals','Prioritize backlog','Sync all agents','Draft growth roadmap'],cls:'cm'},
+ {id:'builder',name:'BUILDER',role:'Development / Projects',color:'#2dff6a',ic:'⚙',L:'B',desc:'Coding, website projects and deployment.',phases:['Coding...','Testing...','Deploying...'],pool:['Refactor dashboard UI','Write README docs','Optimize page load','Polish mobile layout'],cls:'bd'},
+ {id:'sentinel',name:'SENTINEL',role:'Security / Monitoring',color:'#2f8bff',ic:'⛨',L:'S',desc:'Authorized security checks, monitoring and defensive analysis.',phases:['Scanning...','Checking logs...','Threats: 0'],pool:['Review login attempts','Check open ports (own machine)','Verify system updates','Audit firewall rules'],cls:'sn'},
+ {id:'game',name:'GAME MASTER',role:'Gaming / Entertainment',color:'#c34bff',ic:'🎮',L:'G',desc:'Game library, setup, performance tools and entertainment workflows.',phases:['Setup game...','Optimize settings...','Ready to play'],pool:['Update game library','Tune graphics presets','Check storage space','Plan gaming session'],cls:'gm'},
+ {id:'biz',name:'BIZ AGENT',role:'Business / Money',color:'#ffc21a',ic:'$',L:'B',desc:'Business research, client prospecting, outreach drafts and revenue ideas.',phases:['Research...','Contacting...','Opportunities...'],pool:['Research freelance niches','Draft outreach messages','Review pricing ideas','Check client replies'],cls:'bz'}
+];
+const AGN=Object.fromEntries(AG.map(a=>[a.id,a]));
+const byName=n=>AG.find(a=>a.name===n);
+ 
+function portrait(a,sz){
+ const c=a.color;
+ const acc={
+  commander:`<path d="M28 16l5-10 7 6 7-6 5 10z" fill="${c}" opacity=".9"/>`,
+  builder:`<path d="M24 24q16-15 32 0z" fill="${c}" opacity=".85"/><rect x="22" y="23" width="36" height="3" fill="${c}"/>`,
+  sentinel:`<rect x="26" y="34" width="28" height="9" rx="3" fill="${c}" fill-opacity=".3" stroke="${c}"/>`,
+  game:`<path d="M20 40q0-22 20-22t20 22" fill="none" stroke="${c}" stroke-width="3"/><rect x="15" y="38" width="7" height="12" rx="3" fill="${c}"/><rect x="58" y="38" width="7" height="12" rx="3" fill="${c}"/><path d="M20 50q4 10 18 9" fill="none" stroke="${c}" stroke-width="2"/>`,
+  biz:`<circle cx="34" cy="39" r="6" fill="none" stroke="${c}" stroke-width="2"/><circle cx="46" cy="39" r="6" fill="none" stroke="${c}" stroke-width="2"/><path d="M40 62l-4 14h8z" fill="${c}"/>`
+ }[a.id];
+ return `<svg viewBox="0 0 80 80" width="${sz}" height="${sz}" aria-hidden="true"><rect width="80" height="80" fill="#03100d"/><circle cx="40" cy="40" r="36" fill="${c}" opacity=".13"/><path d="M40 7C23 7 14 22 14 42v38h52V42C66 22 57 7 40 7z" fill="#0a1512" stroke="${c}" stroke-width="1.5"/><ellipse cx="40" cy="41" rx="14" ry="17" fill="#010403"/><ellipse cx="34" cy="39" rx="3.4" ry="1.8" fill="${c}"/><ellipse cx="46" cy="39" rx="3.4" ry="1.8" fill="${c}"/>${acc}<path d="M14 80c2-12 12-16 26-16s24 4 26 16z" fill="#0d1d19" stroke="${c}" stroke-width="1"/></svg>`;
 }
-
-function choose(name, statusId) {
-  selected = name;
-  document.getElementById("agent").value = name;
-  document.getElementById(statusId).textContent = "● SELECTED";
-  document.getElementById("log").textContent =
-    name + " selected.\nChoose a mission below to continue.";
-  go("tasks");
+ 
+/* ---------- state ---------- */
+const KEY='zukinpro_os_v1';
+let S;
+function defaults(){
+ const now=Date.now(),m=x=>now-x*60000,q=(title,total,done)=>({title,total,done});
+ return{v:1,
+  agents:{commander:{offline:false,queue:[q('Optimize workflow',20,15),q('Weekly strategy review',12,0)]},builder:{offline:false,queue:[q('Website + AI Tools',20,12),q('Deploy ZUKINPRO OS v1.0',15,0)]},sentinel:{offline:false,queue:[q('System scan & protect',20,18)]},game:{offline:false,queue:[q('NFS Underground',20,9)]},biz:{offline:false,queue:[q('Find USD clients',20,7)]}},
+  logs:[{ts:m(15),a:'COMMANDER',m:'Strategy updated — focus: Growth & Freedom'},{ts:m(12),a:'BIZ AGENT',m:'Checked client opportunities (0 new)'},{ts:m(7),a:'GAME MASTER',m:'Launched NFS Underground (offline mode)'},{ts:m(4),a:'SENTINEL',m:'System scan complete — no threats detected'},{ts:m(2),a:'BUILDER',m:'Finished project setup'},{ts:now,a:'SYSTEM',m:'All agents online. Mission continues.'}],
+  ticks:1000,on:994,
+  set:{user:'Feiz',accent:'#18ffa0',speed:1,auto:true,anim:true},
+  games:[{n:'NFS Underground',s:'Ready'},{n:'GTA San Andreas',s:'Installed'},{n:'Minecraft',s:'Installed'}],
+  perf:{bg:true,low:true,fps:false,gov:false,ram:true},
+  proj:[{n:'ZUKINPRO OS Website',p:40},{n:'AI Tools Hub',p:15},{n:'Custom Plymouth Boot Splash',p:70}],
+  leads:[],
+  fit:{water:0,date:today(),log:[]},
+  paper:{cash:10000,hold:{}}
+ };
 }
-
-function assign() {
-  const name = document.getElementById("agent").value;
-  const task = document.getElementById("mission").value.trim();
-  if (!task) {
-    document.getElementById("log").textContent =
-      "Enter a mission description first.";
-    return;
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&j.v===1){const d=defaults();return Object.assign(d,j,{set:Object.assign(d.set,j.set),perf:Object.assign(d.perf,j.perf)})}}catch(e){}return defaults()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+S=load();
+if(S.fit.date!==today()){S.fit.water=0;S.fit.date=today()}
+function log(a,m){S.logs.push({ts:Date.now(),a,m});if(S.logs.length>300)S.logs.splice(0,S.logs.length-300)}
+const phase=t=>Math.min(2,Math.floor(t.done/t.total*3));
+const status=id=>S.agents[id].offline?'offline':(S.agents[id].queue.length?'working':'idle');
+const prog=id=>{const t=S.agents[id].queue[0];return t?Math.round(t.done/t.total*100):0};
+const online=()=>AG.filter(a=>!S.agents[a.id].offline).length;
+const tasks=()=>AG.reduce((n,a)=>n+S.agents[a.id].queue.length,0);
+const uptime=()=>Math.min(100,S.on/S.ticks*100).toFixed(1)+'%';
+function applyTheme(){document.documentElement.style.setProperty('--g',S.set.accent);document.documentElement.style.setProperty('--g2',S.set.accent+'73')}
+ 
+/* ---------- task engine ---------- */
+function tick(){
+ S.ticks++;let on=0;
+ for(const a of AG){
+  const st=S.agents[a.id];if(st.offline)continue;on++;
+  const t=st.queue[0];
+  if(t){
+   if(Math.random()<.45){
+    const b=phase(t);t.done=Math.min(t.total,t.done+1);const n=phase(t);
+    if(t.done>=t.total){log(a.name,'Completed: '+t.title);st.queue.shift();if(st.queue[0])log(a.name,'Started: '+st.queue[0].title);else log(a.name,'Queue clear — standing by')}
+    else if(n!==b)log(a.name,t.title+' — '+a.phases[n]);
+   }
+  }else if(S.set.auto&&Math.random()<.25){
+   const title=pick(a.pool);st.queue.push({title,total:rint(10,20),done:0});log('COMMANDER','Assigned to '+a.name+': '+title);
   }
-  missions.unshift({name,task});
-  document.getElementById("log").textContent =
-    missions.map((m,i) =>
-      (i+1)+". ["+m.name+"] "+m.task+
-      "\nStatus: DEMO ASSIGNED — no real task executed."
-    ).join("\n\n");
-  document.getElementById("mission").value = "";
-  const ids = {"Commander":"s0","Builder":"s1","Sentinel":"s2","Game Master":"s3","Biz Agent":"s4"};
-  document.getElementById(ids[name]).textContent = "● MISSION ASSIGNED (DEMO)";
+ }
+ S.on+=on/5;save();renderDyn();
 }
-
-function zone(name) {
-  document.getElementById("agent").value =
-    name === "Cybersecurity" ? "Sentinel" :
-    name === "Gaming" ? "Game Master" :
-    name === "Business" ? "Biz Agent" :
-    name === "Development" || name === "AI Lab" ? "Builder" : "Commander";
-  document.getElementById("mission").value =
-    "Help me plan my " + name + " workflow.";
-  document.getElementById("log").textContent =
-    name + " zone selected. Describe your mission and assign an agent.";
-  go("tasks");
+let tickTimer;function startTick(){clearInterval(tickTimer);tickTimer=setInterval(tick,Math.round(2500/S.set.speed))}
+function addTask(id,title,total){
+ const a=AGN[id];if(!a)return false;title=title.trim().slice(0,80);if(!title)return false;
+ S.agents[id].queue.push({title,total:total||rint(10,20),done:0});log('COMMANDER','Assigned to '+a.name+': '+title);save();renderDyn();return true;
 }
+ 
+/* ---------- navigation ---------- */
+const NAV=[
+ ['home','Home','<path d="M3 11l9-8 9 8v10H3z"/><path d="M9 21v-7h6v7"/>'],
+ ['agents','AI Agent World','<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6c3 3 9 3 12 0M6 18c3-3 9-3 12 0"/>'],
+ ['games','Games','<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.5 12.5h5M16 11h.01M18 14h.01"/>'],
+ ['cyber','Cybersecurity','<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'],
+ ['dev','Development','<path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/>'],
+ ['biz','Business','<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'],
+ ['crypto','Crypto & Trading','<circle cx="12" cy="12" r="9"/><path d="M10 7v10M10 7h3a2.5 2.5 0 010 5h-3m0 0h3.5a2.5 2.5 0 010 5H10M12 5v2M12 17v2"/>'],
+ ['fit','Fitness','<path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/>'],
+ ['set','Settings','<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>']
+];
+let VIEW='agents';
+function renderNav(){$('#nav').innerHTML=NAV.map(([k,l,p])=>`<button data-act="nav" data-v="${k}" class="${k===VIEW?'on':''}"><svg viewBox="0 0 24 24">${p}</svg>${l}</button>`).join('')}
+function go(v){
+ VIEW=v;renderNav();
+ const isMap=v==='agents';$('#viewMap').hidden=!isMap;$('#viewOther').hidden=isMap;
+ $('#hMode').textContent=(NAV.find(n=>n[0]===v)[1]).toUpperCase();
+ if(!isMap)renderView();
+ window.scrollTo({top:0});
+}
+function renderView(){
+ if(VIEW==='agents')return;
+ const fn={home:vHome,games:vGames,cyber:vCyber,dev:vDev,biz:vBiz,crypto:vCrypto,fit:vFit,set:vSet}[VIEW];
+ $('#viewOther').innerHTML=fn();
+}
+const head=(t,s)=>`<div class="vh"><div><h2 class="orb">${t}</h2><p class="dim">${s}</p></div></div>`;
+ 
+function vHome(){
+ const w=AG.map(a=>`<div class="card" style="--ac:${a.color}"><div class="row">${portrait(a,40)}<div><b class="orb sm">${a.name}</b><div class="dim sm">${status(a.id)} · ${prog(a.id)}%</div></div></div></div>`).join('');
+ const won=S.leads.filter(l=>l.stage===3).reduce((n,l)=>n+l.val,0);
+ return head('WELCOME BACK, '+esc(S.set.user).toUpperCase(),'Dream. Plan. Build. Execute.')+
+ `<div class="grid g4"><div class="card"><h3>AGENTS ONLINE</h3><div class="big">${online()}/5</div></div><div class="card"><h3>RUNNING TASKS</h3><div class="big">${tasks()}</div></div><div class="card"><h3>UPTIME</h3><div class="big">${uptime()}</div></div><div class="card"><h3>REVENUE WON</h3><div class="big">$${won}</div></div></div>
+ <div class="grid g3" style="margin-top:10px">${w}</div>
+ <div class="grid g4" style="margin-top:10px">${NAV.slice(1).map(n=>`<button class="card" data-act="nav" data-v="${n[0]}"><h3>${n[1].toUpperCase()}</h3><span class="dim sm">Open ›</span></button>`).join('')}</div>`;
+}
+function vGames(){
+ const pf=[['bg','Close background apps before playing'],['low','Use a low graphics preset (4 GB RAM laptop)'],['fps','Cap FPS at 30 to reduce heat'],['gov','Set CPU governor to performance (Linux)'],['ram','Check free RAM first (htop)']];
+ return head('GAMES — GAME MASTER','Library, launch workflow and performance checklist')+
+ `<div class="grid g2"><div class="card"><h3>GAME LIBRARY</h3><div class="list">${S.games.map((g,i)=>`<div class="li"><span><b>${esc(g.n)}</b> <span class="dim sm">· ${esc(g.s)}</span></span><span class="row"><button class="btn xs" data-act="launch" data-i="${i}">▶ Launch</button><button class="btn xs warn" data-act="rmgame" data-i="${i}">✕</button></span></div>`).join('')||'<p class="dim">No games yet.</p>'}</div>
+  <form data-form="addgame" class="row" style="margin-top:10px"><input name="n" placeholder="Add a game…" required maxlength="40" style="flex:1"><button class="btn">Add</button></form></div>
+  <div class="card"><h3>PERFORMANCE CHECKLIST</h3><div class="list">${pf.map(([k,l])=>`<label class="li"><span>${l}</span><input type="checkbox" data-chk="${k}" ${S.perf[k]?'checked':''}></label>`).join('')}</div><p class="dim sm" style="margin-top:8px">This is a personal checklist — it does not change system settings.</p></div></div>`;
+}
+function secChecks(){
+ let ls=false;try{localStorage.setItem('_t','1');localStorage.removeItem('_t');ls=true}catch(e){}
+ return[['HTTPS connection',location.protocol==='https:'],['Secure browser context',!!window.isSecureContext],['Cookies enabled',navigator.cookieEnabled],['Device online',navigator.onLine],['Local storage available',ls],['Page not embedded in another site',window.top===window.self]];
+}
+function vCyber(){
+ const cmds=['sudo apt update && sudo apt full-upgrade','sudo ufw enable','sudo ss -tulpn','sudo apt install lynis && sudo lynis audit system'];
+ return head('CYBERSECURITY — SENTINEL','Authorized, defensive checks on your own devices only')+
+ `<div class="grid g2"><div class="card"><h3>BROWSER SECURITY CHECK</h3><div id="secOut" class="list"><p class="dim sm">Press the button to run real checks on this browser.</p></div><button class="btn" style="margin-top:10px" data-act="seccheck">Run check</button></div>
+ <div class="card"><h3>HARDENING COMMANDS (YOUR OWN LINUX)</h3><div class="list">${cmds.map((c,i)=>`<div class="li"><code class="mono sm" style="word-break:break-all">${esc(c)}</code><button class="btn xs" data-act="copycmd" data-i="${i}">Copy</button></div>`).join('')}</div><p class="dim sm" style="margin-top:8px">Run these only on machines you own or are authorized to manage.</p></div></div>`;
+}
+function vDev(){
+ return head('DEVELOPMENT — BUILDER','Projects and deployment')+
+ `<div class="grid g2"><div class="card"><h3>PROJECTS</h3><div class="list">${S.proj.map((p,i)=>`<div class="li" style="display:block"><div class="row sp"><b>${esc(p.n)}</b><span class="row"><span class="orb sm">${p.p}%</span><button class="btn xs" data-act="projup" data-i="${i}">+10%</button><button class="btn xs warn" data-act="rmproj" data-i="${i}">✕</button></span></div><div class="bar" style="margin-top:6px"><i style="width:${p.p}%"></i></div></div>`).join('')}</div>
+ <form data-form="addproj" class="row" style="margin-top:10px"><input name="n" placeholder="New project…" required maxlength="50" style="flex:1"><button class="btn">Add</button></form></div>
+ <div class="card"><h3>REPOSITORY</h3><div class="list"><a class="btn" href="https://github.com/zukinpro-OS/zukinpro-linux" target="_blank" rel="noopener">GitHub repository ↗</a><a class="btn" href="https://zukinpro-os.github.io/zukinpro-linux/" target="_blank" rel="noopener">Live site (GitHub Pages) ↗</a></div>
+ <h3 style="margin-top:12px">DEPLOY FROM PHONE</h3><ol class="sm dim" style="padding-left:18px;line-height:1.7"><li>Open the repository in your browser.</li><li>Add file → Upload files, choose index.html.</li><li>Commit changes to main.</li><li>Wait about a minute, then refresh the live site.</li></ol></div></div>`;
+}
+const STG=['New','Contacted','Replied','Won'];
+function vBiz(){
+ const won=S.leads.filter(l=>l.stage===3).reduce((n,l)=>n+l.val,0),pipe=S.leads.filter(l=>l.stage<3).reduce((n,l)=>n+l.val,0);
+ return head('BUSINESS — BIZ AGENT','Lead pipeline, outreach drafts and revenue')+
+ `<div class="grid g3"><div class="card"><h3>LEADS</h3><div class="big">${S.leads.length}</div></div><div class="card"><h3>IN PIPELINE</h3><div class="big">$${pipe}</div></div><div class="card"><h3>WON</h3><div class="big">$${won}</div></div></div>
+ <div class="grid g2" style="margin-top:10px"><div class="card"><h3>PIPELINE</h3><div class="list">${S.leads.map((l,i)=>`<div class="li"><span><b>${esc(l.name)}</b> <span class="dim sm">${esc(l.svc)} · $${l.val}</span></span><span class="row"><span class="stg">${STG[l.stage]}</span>${l.stage<3?`<button class="btn xs" data-act="lead" data-i="${i}">Next ›</button>`:''}<button class="btn xs warn" data-act="rmlead" data-i="${i}">✕</button></span></div>`).join('')||'<p class="dim sm">No leads yet. Add your first one below.</p>'}</div>
+ <form data-form="addlead" class="f" style="margin-top:10px"><input name="name" placeholder="Client or business name" required maxlength="50"><input name="svc" placeholder="Service (e.g. website, logo)" required maxlength="40"><input name="val" type="number" min="0" placeholder="Value in USD" required><button class="btn">Add lead</button></form></div>
+ <div class="card"><h3>OUTREACH DRAFT</h3><form data-form="draft" class="f"><input name="who" placeholder="Their name" required maxlength="40"><input name="biz" placeholder="Their business" required maxlength="50"><input name="svc" placeholder="Your service" required maxlength="40"><button class="btn">Generate draft</button></form><textarea id="draftOut" rows="8" style="width:100%;margin-top:10px" placeholder="Your draft appears here…"></textarea><button class="btn" style="margin-top:8px" data-act="copydraft">Copy draft</button></div></div>`;
+}
+const COINS=[['BTC',67000],['ETH',3400],['SOL',150],['DOGE',.15]];
+const PX=Object.fromEntries(COINS);const PX0={...PX};
+function paperVal(){return S.paper.cash+Object.entries(S.paper.hold).reduce((n,[k,q])=>n+q*PX[k],0)}
+function vCrypto(){
+ return head('CRYPTO & TRADING','Paper-trading practice with simulated prices')+
+ `<div class="note">SIMULATED prices and virtual money only. This is not real market data and not financial advice.</div>
+ <div class="grid g3" style="margin-top:10px"><div class="card"><h3>CASH</h3><div class="big" id="pCash">$${S.paper.cash.toFixed(2)}</div></div><div class="card"><h3>PORTFOLIO VALUE</h3><div class="big" id="pVal">$${paperVal().toFixed(2)}</div></div><div class="card"><h3>P/L VS $10,000</h3><div class="big" id="pPL"></div></div></div>
+ <div class="card" style="margin-top:10px"><h3>WATCHLIST</h3><div class="list">${COINS.map(([k])=>`<div class="li"><span><b>${k}</b> <span class="dim sm">holding <span id="h${k}">${(S.paper.hold[k]||0).toFixed(4)}</span></span></span><span class="row"><b id="px${k}" class="mono"></b><button class="btn xs" data-act="buy" data-k="${k}">Buy $100</button><button class="btn xs warn" data-act="sell" data-k="${k}">Sell all</button></span></div>`).join('')}</div></div>`;
+}
+function updCrypto(){
+ if(VIEW!=='crypto')return;
+ COINS.forEach(([k])=>{const e=$('#px'+k);if(e)e.textContent='$'+(PX[k]>=1?PX[k].toFixed(2):PX[k].toFixed(4))});
+ const v=paperVal();const a=$('#pVal');if(a)a.textContent='$'+v.toFixed(2);const c=$('#pCash');if(c)c.textContent='$'+S.paper.cash.toFixed(2);
+ const p=$('#pPL');if(p){const d=v-10000;p.textContent=(d>=0?'+':'')+d.toFixed(2);p.style.color=d>=0?'var(--g)':'var(--bad)'}
+ COINS.forEach(([k])=>{const e=$('#h'+k);if(e)e.textContent=(S.paper.hold[k]||0).toFixed(4)});
+}
+setInterval(()=>{COINS.forEach(([k])=>{PX[k]=Math.max(PX0[k]*.3,PX[k]*(1+rnd(-.006,.006)))});updCrypto()},2500);
+function streak(){const days=new Set(S.fit.log.map(l=>l.d));let n=0;const d=new Date();if(!days.has(today()))d.setDate(d.getDate()-1);for(;;){const k=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());if(days.has(k)){n++;d.setDate(d.getDate()-1)}else break}return n}
+function vFit(){
+ const w=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());w.push([['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()],S.fit.log.filter(l=>l.d===k).reduce((n,l)=>n+l.min,0)])}
+ const mx=Math.max(30,...w.map(x=>x[1]));
+ return head('FITNESS','Water, workouts and streak')+
+ `<div class="grid g3"><div class="card"><h3>WATER TODAY</h3><div class="big">${S.fit.water}/8</div><div class="row" style="margin-top:8px"><button class="btn xs" data-act="water" data-d="1">+ Glass</button><button class="btn xs warn" data-act="water" data-d="-1">− Glass</button></div></div><div class="card"><h3>STREAK</h3><div class="big">${streak()} days</div></div><div class="card"><h3>MINUTES TODAY</h3><div class="big">${S.fit.log.filter(l=>l.d===today()).reduce((n,l)=>n+l.min,0)}</div></div></div>
+ <div class="grid g2" style="margin-top:10px"><div class="card"><h3>LOG A WORKOUT</h3><form data-form="addfit" class="f"><input name="ex" placeholder="Exercise (e.g. push-ups)" required maxlength="40"><input name="min" type="number" min="1" max="600" placeholder="Minutes" required><button class="btn">Log</button></form><div class="list" style="margin-top:10px">${S.fit.log.slice(-5).reverse().map(l=>`<div class="li"><span>${esc(l.ex)} <span class="dim sm">${l.d}</span></span><b>${l.min} min</b></div>`).join('')}</div></div>
+ <div class="card"><h3>LAST 7 DAYS (MINUTES)</h3><div class="row" style="align-items:flex-end;height:150px;gap:10px">${w.map(([d,m])=>`<div style="flex:1;text-align:center"><div style="height:${Math.round(m/mx*110)}px;min-height:3px;background:linear-gradient(var(--g),#0a5);border-radius:4px;box-shadow:0 0 8px var(--g)"></div><small class="dim">${d}</small></div>`).join('')}</div></div></div>`;
+}
+function vSet(){
+ return head('SETTINGS','Personalize ZUKINPRO OS')+
+ `<div class="grid g2"><div class="card"><h3>PROFILE & LOOK</h3><form data-form="settings" class="f"><label>Display name</label><input name="user" value="${esc(S.set.user)}" maxlength="24"><label>Accent color</label><select name="accent">${[['#18ffa0','Neon green'],['#22e6ff','Cyan'],['#c34bff','Purple'],['#ffc21a','Amber'],['#ff4d6d','Red']].map(([v,l])=>`<option value="${v}" ${S.set.accent===v?'selected':''}>${l}</option>`).join('')}</select><label>Simulation speed</label><select name="speed">${[[.5,'Slow'],[1,'Normal'],[2,'Fast'],[4,'Turbo']].map(([v,l])=>`<option value="${v}" ${S.set.speed==v?'selected':''}>${l}</option>`).join('')}</select><label class="row"><input type="checkbox" name="auto" ${S.set.auto?'checked':''}> Commander auto-assigns routine tasks</label><label class="row"><input type="checkbox" name="anim" ${S.set.anim?'checked':''}> Show animated traffic on the map</label><button class="btn">Save settings</button></form></div>
+ <div class="card"><h3>DATA</h3><div class="list"><button class="btn" data-act="export">Export data (JSON)</button><button class="btn warn" data-act="reset">Reset everything</button></div><p class="dim sm" style="margin-top:8px">All data is stored only in this browser on this device.</p></div></div>`;
+}
+ 
+/* ---------- dynamic rendering ---------- */
+const bars=p=>Array.from({length:5},(_,i)=>`<i class="${i<Math.round(p/20)?'f':''}"></i>`).join('');
+const stLabel=s=>({working:'Online · Working',idle:'Online · Idle',offline:'Offline'}[s]);
+function renderDyn(){
+ const n=online();
+ $('#sCnt').textContent=n+'/5';$('#sA').textContent=n;$('#sT').textContent=tasks();$('#sU').textContent=uptime();
+ $('#hStat').textContent=n?'ONLINE':'OFFLINE';$('#hUser').textContent=S.set.user;
+ $('#alist').innerHTML=AG.map(a=>{const s=status(a.id),p=prog(a.id);return`<button class="al" style="--ac:${a.color}" data-act="agent" data-id="${a.id}"><span class="pt">${portrait(a,50)}</span><span><b>${a.name} ${a.ic}</b><small>${a.role}</small><span class="st ${s==='working'?'':s}"><i></i>${s==='offline'?'Offline':s==='idle'?'Idle':'Online'}</span></span><span class="bars">${bars(p)}</span></button>`}).join('');
+ $('#feed').innerHTML=S.logs.filter(l=>l.a!=='SYSTEM').slice(-5).reverse().map(l=>`<div class="fi"><i></i><div>${esc(titleCase(l.a))}: ${esc(l.m)}<small>${ago(l.ts)}</small></div></div>`).join('');
+ $('#cards').innerHTML=AG.map(a=>{const s=status(a.id),st=S.agents[a.id],t=st.queue[0],p=prog(a.id),ph=t?phase(t):-1;
+  const lines=a.phases.map((x,i)=>`<div class="${t?(i<ph?'d':i===ph?'c':''):''}"><b>${a.L}${i+1}</b>${x}</div>`).join('');
+  return`<div class="panel ac" style="--ac:${a.color}" data-act="agent" data-id="${a.id}"><div class="top"><span class="pt">${portrait(a,46)}</span><span><b>${a.name}</b><small>${a.role}</small></span></div><div class="tk">${t?'“'+esc(t.title)+'”':'“Standing by”'}</div><div class="pr"><div class="bar" style="--ac:${a.color}"><i style="width:${p}%"></i></div><span>${s==='offline'?'—':p+'%'}</span></div><div class="ph3">${lines}</div><span class="st ${s==='working'?'':s}"><i></i>${s==='offline'?'Offline':s==='idle'?'Idle':'Online'}</span></div>`}).join('');
+ const lg=$('#lg'),stick=lg.scrollTop+lg.clientHeight>=lg.scrollHeight-30;
+ lg.innerHTML=S.logs.slice(-40).map(l=>{const a=byName(l.a);return`<div class="L">[${hhmm(l.ts)}] <span class="${a?a.cls:'sy'}">[${esc(l.a)}]</span> ${esc(l.m)}</div>`}).join('');
+ if(stick)lg.scrollTop=lg.scrollHeight;
+ AG.forEach(a=>{const e=$('#mk_'+a.id);if(e)e.classList.toggle('off',S.agents[a.id].offline)});
+ if(VIEW==='home')renderView();
+ liveModal();
+}
+const titleCase=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+ 
+/* ---------- modal ---------- */
+let OPEN=null;
+function modal(title,html){$('#mTitle').textContent=title;$('#mBody').innerHTML=html;$('#modal').classList.add('open')}
+function closeModal(){$('#modal').classList.remove('open');$('#mBody').innerHTML='';OPEN=null}
+function agentModal(id){
+ const a=AGN[id];OPEN={t:'agent',id};
+ modal(a.name,`<div style="--ac:${a.color}"><div class="dh"><span class="pt">${portrait(a,90)}</span><div><b class="orb">${a.name} ${a.ic}</b><div class="dim">${a.role}</div><p class="sm" style="margin:6px 0">${a.desc}</p><span id="dSt"></span></div></div>
+ <div class="card"><h3>CURRENT TASK</h3><div id="dTask"></div><div class="bar" style="margin:8px 0;--ac:${a.color}"><i id="dBar" style="width:0"></i></div></div>
+ <div class="grid g2" style="margin-top:10px"><div class="card"><h3>TASK QUEUE</h3><div id="dQ" class="list"></div>
+ <form data-form="atask" data-id="${id}" class="row" style="margin-top:8px"><input name="t" placeholder="Add task…" required maxlength="80" style="flex:1"><button class="btn xs">Add</button></form></div>
+ <div class="card"><h3>ACTIVITY HISTORY</h3><div id="dH" class="mono sm" style="max-height:200px;overflow:auto"></div></div></div>
+ <div class="row" style="margin-top:12px"><button class="btn" data-act="toggle" data-id="${id}" id="dTog"></button></div></div>`);
+ liveModal();
+}
+function liveModal(){
+ if(!OPEN||OPEN.t!=='agent'||!$('#dQ'))return;
+ const id=OPEN.id,a=AGN[id],st=S.agents[id],s=status(id),t=st.queue[0];
+ $('#dSt').innerHTML=`<span class="st ${s==='working'?'':s}"><i></i>${stLabel(s)}</span>`;
+ $('#dTask').innerHTML=t?`<b>${esc(t.title)}</b> <span class="dim sm">— ${a.phases[phase(t)]} (${t.done}/${t.total})</span>`:'<span class="dim">No active task</span>';
+ $('#dBar').style.width=prog(id)+'%';
+ $('#dQ').innerHTML=st.queue.map((q,i)=>`<div class="li"><span class="sm">${i===0?'▶ ':''}${esc(q.title)}</span><button class="btn xs warn" data-act="rmtask" data-id="${id}" data-i="${i}">✕</button></div>`).join('')||'<p class="dim sm">Queue is empty.</p>';
+ $('#dH').innerHTML=S.logs.filter(l=>l.a===a.name).slice(-12).reverse().map(l=>`<div>[${hhmm(l.ts)}] ${esc(l.m)}</div>`).join('')||'<span class="dim">No activity yet.</span>';
+ $('#dTog').textContent=st.offline?'Bring online':'Set offline';
+}
+function assignModal(pre){
+ OPEN=null;
+ modal('ASSIGN TASK',`<form data-form="assign" class="f"><label>Agent</label><select name="a">${AG.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${a.name} — ${a.role}</option>`).join('')}</select><label>Task</label><input name="t" placeholder="What should the agent do?" required maxlength="80"><label>Size</label><select name="s"><option value="8">Quick</option><option value="14" selected>Standard</option><option value="24">Long</option></select><button class="btn">Assign</button></form>`);
+ setTimeout(()=>{const i=$('#mBody input[name=t]');i&&i.focus()},50);
+}
+let LF='ALL';
+function logsModal(){
+ OPEN=null;
+ modal('AGENT LOGS',`<div class="row" style="margin-bottom:10px"><select id="lf"><option value="ALL">All agents</option>${AG.map(a=>`<option>${a.name}</option>`).join('')}<option>SYSTEM</option></select><button class="btn xs" data-act="exlogs">Export .txt</button><button class="btn xs warn" data-act="clrlogs">Clear</button></div><div id="lbody" class="mono sm" style="max-height:55vh;overflow:auto"></div>`);
+ $('#lf').value=LF;fillLogs();
+}
+function fillLogs(){const el=$('#lbody');if(!el)return;el.innerHTML=S.logs.filter(l=>LF==='ALL'||l.a===LF).slice().reverse().map(l=>`<div style="margin-bottom:3px">[${new Date(l.ts).toLocaleString('en-GB')}] <b>${esc(l.a)}</b> — ${esc(l.m)}</div>`).join('')||'<span class="dim">No entries.</span>'}
+function termModal(){
+ OPEN=null;
+ modal('SYSTEM TERMINAL',`<div class="term"><div id="tOut"></div><form id="tForm"><span>zukin@os:~$</span><input id="tIn" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Command"></form></div><p class="dim sm" style="margin-top:6px">A simulated ZUKINPRO OS console — it controls this dashboard only. Type <b>help</b>.</p>`);
+ tp('ZUKINPRO OS console v1.0\nType "help" for commands.');setTimeout(()=>{const i=$('#tIn');i&&i.focus()},50);
+}
+const tp=t=>{const o=$('#tOut');if(!o)return;o.textContent+=t+'\n';o.scrollTop=o.scrollHeight};
+const findAg=k=>{k=(k||'').toLowerCase();return AG.find(a=>a.id===k||a.name.toLowerCase().replace(/\s/g,'')===k||a.id.startsWith(k)&&k.length>1)};
+function termRun(line){
+ tp('zukin@os:~$ '+line);const [c,...r]=line.trim().split(/\s+/);const arg=r.join(' ');
+ switch((c||'').toLowerCase()){
+  case'':break;
+  case'help':tp('help · status · agents · tasks <agent> · assign <agent> <task>\nonline <agent> · offline <agent> · logs [n] · uptime\nwhoami · date · neofetch · open <view> · clear');break;
+  case'status':tp(`agents online: ${online()}/5\nrunning tasks: ${tasks()}\nuptime: ${uptime()}`);break;
+  case'agents':AG.forEach(a=>tp(`${a.name.padEnd(12)} ${status(a.id).padEnd(8)} ${prog(a.id)}%`));break;
+  case'tasks':{const a=findAg(r[0]);if(!a)return tp('usage: tasks <agent>');const q=S.agents[a.id].queue;tp(q.length?q.map((t,i)=>`${i+1}. ${t.title} (${Math.round(t.done/t.total*100)}%)`).join('\n'):'queue empty');break}
+  case'assign':{const a=findAg(r[0]);const t=r.slice(1).join(' ');if(!a||!t)return tp('usage: assign <agent> <task>');addTask(a.id,t);tp('assigned to '+a.name);break}
+  case'online':case'offline':{const a=findAg(r[0]);if(!a)return tp('usage: '+c+' <agent>');S.agents[a.id].offline=c==='offline';log('SYSTEM',a.name+' set '+c);save();renderDyn();tp(a.name+' is now '+c);break}
+  case'logs':{const n=Math.min(30,parseInt(r[0])||8);S.logs.slice(-n).forEach(l=>tp(`[${hhmm(l.ts)}] [${l.a}] ${l.m}`));break}
+  case'uptime':tp(uptime());break;
+  case'whoami':tp(S.set.user+' (ZUKINPRO)');break;
+  case'date':tp(new Date().toString());break;
+  case'neofetch':tp(`  ZUKINPRO OS (web)\n  user: ${S.set.user}\n  agents: ${online()}/5 online\n  browser: ${navigator.userAgent.slice(0,50)}…`);break;
+  case'open':{const v=NAV.find(n=>n[0]===(r[0]||'').toLowerCase());if(!v)return tp('views: '+NAV.map(n=>n[0]).join(', '));closeModal();go(v[0]);break}
+  case'clear':$('#tOut').textContent='';break;
+  default:tp('command not found: '+c+' (try help)');
+ }
+}
+ 
+/* ---------- actions ---------- */
+let dragMoved=false;
+document.addEventListener('click',e=>{
+ if(e.target.id==='modal'){closeModal();return}
+ const t=e.target.closest('[data-act]');if(!t)return;
+ if(dragMoved&&t.closest('#map')){dragMoved=false;return}
+ const d=t.dataset,act=d.act,i=+d.i;
+ switch(act){
+  case'nav':go(d.v);break;
+  case'close':closeModal();break;
+  case'agent':agentModal(d.id);break;
+  case'assign':assignModal();break;
+  case'viewmap':closeModal();go('agents');zreset();{const m=$('#map');m.classList.remove('flash');void m.offsetWidth;m.classList.add('flash');m.scrollIntoView({behavior:'smooth',block:'center'})}break;
+  case'logs':logsModal();break;
+  case'term':termModal();break;
+  case'zin':zoom(1.3);break;case'zout':zoom(1/1.3);break;case'zreset':zreset();break;
+  case'toggle':{const st=S.agents[d.id];st.offline=!st.offline;log(AGN[d.id].name,st.offline?'Went offline':'Back online');save();renderDyn();break}
+  case'rmtask':S.agents[d.id].queue.splice(i,1);log('COMMANDER','Removed a task from '+AGN[d.id].name);save();renderDyn();break;
+  case'exlogs':download('zukinpro-logs.txt',S.logs.map(l=>`[${new Date(l.ts).toISOString()}] [${l.a}] ${l.m}`).join('\n'));break;
+  case'clrlogs':S.logs=[{ts:Date.now(),a:'SYSTEM',m:'Logs cleared'}];save();fillLogs();renderDyn();break;
+  case'launch':{const g=S.games[i];S.agents.game.queue.unshift({title:'Launching '+g.n,total:8,done:0});log('GAME MASTER','Launching '+g.n);save();renderDyn();break}
+  case'rmgame':S.games.splice(i,1);save();renderView();break;
+  case'seccheck':{const r=secChecks();$('#secOut').innerHTML=r.map(([l,ok])=>`<div class="li"><span>${l}</span><b class="${ok?'ok':'no'}">${ok?'PASS':'REVIEW'}</b></div>`).join('')+`<div class="li"><span class="sm dim">${esc(navigator.platform||'')} · ${navigator.hardwareConcurrency||'?'} cores · ${esc(navigator.language)}</span></div>`;log('SENTINEL','Browser security check: '+r.filter(x=>x[1]).length+'/'+r.length+' passed');save();renderDyn();break}
+  case'copycmd':copy(['sudo apt update && sudo apt full-upgrade','sudo ufw enable','sudo ss -tulpn','sudo apt install lynis && sudo lynis audit system'][i]);t.textContent='Copied';break;
+  case'projup':S.proj[i].p=Math.min(100,S.proj[i].p+10);log('BUILDER',S.proj[i].n+' → '+S.proj[i].p+'%');save();renderView();renderDyn();break;
+  case'rmproj':S.proj.splice(i,1);save();renderView();break;
+  case'lead':S.leads[i].stage++;log('BIZ AGENT',S.leads[i].name+' → '+STG[S.leads[i].stage]);save();renderView();renderDyn();break;
+  case'rmlead':S.leads.splice(i,1);save();renderView();break;
+  case'copydraft':{const v=$('#draftOut').value;if(v){copy(v);t.textContent='Copied'}break}
+  case'buy':{const k=d.k;if(S.paper.cash>=100){S.paper.cash-=100;S.paper.hold[k]=(S.paper.hold[k]||0)+100/PX[k];save();updCrypto()}break}
+  case'sell':{const k=d.k,q=S.paper.hold[k]||0;if(q>0){S.paper.cash+=q*PX[k];S.paper.hold[k]=0;save();updCrypto()}break}
+  case'water':S.fit.water=Math.max(0,Math.min(20,S.fit.water+ +d.d));save();renderView();break;
+  case'export':download('zukinpro-data.json',JSON.stringify(S,null,2));break;
+  case'reset':if(confirm('Reset all ZUKINPRO OS data on this device?')){localStorage.removeItem(KEY);location.reload()}break;
+ }
+});
+document.addEventListener('change',e=>{
+ if(e.target.id==='lf'){LF=e.target.value;fillLogs()}
+ if(e.target.dataset.chk){S.perf[e.target.dataset.chk]=e.target.checked;save()}
+});
+document.addEventListener('submit',e=>{
+ const f=e.target;if(f.id==='tForm'){e.preventDefault();const i=$('#tIn');termRun(i.value);i.value='';return}
+ const k=f.dataset.form;if(!k)return;e.preventDefault();const v=Object.fromEntries(new FormData(f));
+ switch(k){
+  case'assign':if(addTask(v.a,v.t,+v.s)){closeModal()}break;
+  case'atask':addTask(f.dataset.id,v.t);f.reset();break;
+  case'addgame':S.games.push({n:v.n.trim(),s:'Installed'});save();renderView();break;
+  case'addproj':S.proj.push({n:v.n.trim(),p:0});log('BUILDER','New project: '+v.n.trim());save();renderView();renderDyn();break;
+  case'addlead':S.leads.push({name:v.name.trim(),svc:v.svc.trim(),val:Math.max(0,+v.val||0),stage:0});log('BIZ AGENT','New lead: '+v.name.trim());save();renderView();renderDyn();break;
+  case'draft':$('#draftOut').value=`Hi ${v.who},\n\nI'm ${S.set.user} from ZUKINPRO. I came across ${v.biz} and think it could benefit from ${v.svc}. I help small businesses with quick, affordable ${v.svc} and would love to show you a few ideas.\n\nWould you be open to a short chat this week?\n\nBest regards,\n${S.set.user}`;log('BIZ AGENT','Outreach draft prepared for '+v.biz);save();renderDyn();break;
+  case'addfit':S.fit.log.push({d:today(),ex:v.ex.trim(),min:Math.max(1,+v.min||1)});save();renderView();break;
+  case'settings':S.set.user=(v.user||'Feiz').trim()||'Feiz';S.set.accent=v.accent;S.set.speed=+v.speed;S.set.auto=!!v.auto;S.set.anim=!!v.anim;save();applyTheme();startTick();drawCity();renderDyn();renderView();break;
+ }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+ 
+/* ---------- city map ---------- */
+const GW=10,GH=6,nodes=[],NI={};
+function isLand(x,y,m){const dx=(x-52)/50,dy=(y-52)/44,r=dx*dx+dy*dy;return r<m*(1+.1*Math.sin(x*.28+1)+.08*Math.cos(y*.45))&&!(x<26&&y>68)&&!(x>82&&y<24)}
+for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){const x=9+i*9+j*.8,y=14+j*14.5+Math.sin(i*.8)*1.2;const n={i,j,x,y,land:isLand(x,y,.92),nb:[]};nodes.push(n);NI[i+','+j]=nodes.length-1}
+const edges=[];
+const nid=(i,j)=>NI[i+','+j];
+nodes.forEach((n,k)=>{if(!n.land)return;[[1,0],[0,1]].forEach(([di,dj])=>{const o=nid(n.i+di,n.j+dj);if(o!==undefined&&nodes[o].land){edges.push({a:k,b:o,h:di===1});n.nb.push(o);nodes[o].nb.push(k)}})});
+function drawCity(){
+ const c=$('#cityCv');c.width=1200;c.height=640;const g=c.getContext('2d'),W=1200,H=640,px=x=>x*W/100,py=y=>y*H/100;
+ let seed=11;const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+ let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#03090c');gr.addColorStop(1,'#03161a');g.fillStyle=gr;g.fillRect(0,0,W,H);
+ g.strokeStyle='rgba(34,230,255,.08)';for(let k=0;k<110;k++){const x=R()*W,y=R()*H;g.beginPath();g.moveTo(x,y);g.lineTo(x+20+R()*50,y);g.stroke()}
+ g.fillStyle='#04130f';g.beginPath();g.moveTo(0,70);for(let x=0;x<=W;x+=24)g.lineTo(x,36+Math.sin(x*.012)*22+Math.sin(x*.05)*8+R()*6);g.lineTo(W,0);g.lineTo(0,0);g.fill();
+ g.strokeStyle='rgba(24,255,160,.22)';g.beginPath();for(let x=0;x<=W;x+=24){const y=36+Math.sin(x*.012)*22+Math.sin(x*.05)*8;x?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();
+ const S6=6,coast=[];
+ for(let X=0;X<W;X+=S6)for(let Y=0;Y<H;Y+=S6){const x=(X+3)*100/W,y=(Y+3)*100/H;if(isLand(x,y,1)){const cs=!isLand(x+1.3,y,1)||!isLand(x-1.3,y,1)||!isLand(x,y+1.8,1)||!isLand(x,y-1.8,1);g.fillStyle=cs?'#0b3a2c':'#07120f';g.fillRect(X,Y,S6,S6);if(cs)coast.push([X,Y])}}
+ g.save();g.shadowColor='#18ffa0';g.shadowBlur=10;g.fillStyle='rgba(24,255,160,.5)';coast.forEach(([X,Y])=>g.fillRect(X+1,Y+1,3,3));g.restore();
+ g.lineCap='round';
+ edges.forEach(e=>{const A=nodes[e.a],B=nodes[e.b];g.strokeStyle='#020806';g.lineWidth=11;g.beginPath();g.moveTo(px(A.x),py(A.y));g.lineTo(px(B.x),py(B.y));g.stroke()});
+ g.save();g.shadowBlur=8;edges.forEach((e,k)=>{const A=nodes[e.a],B=nodes[e.b],main=(e.h&&A.j%2===0)||(!e.h&&A.i%3===0);g.shadowColor=main?'#18ffa0':'#ffb43c';g.strokeStyle=main?'rgba(24,255,160,.6)':'rgba(255,180,60,.32)';g.lineWidth=main?2.2:1.3;g.beginPath();g.moveTo(px(A.x),py(A.y));g.lineTo(px(B.x),py(B.y));g.stroke()});g.restore();
+ const cells=[];
+ for(let j=0;j<GH-1;j++)for(let i=0;i<GW-1;i++){const k=[nid(i,j),nid(i+1,j),nid(i+1,j+1),nid(i,j+1)];if(k.every(n=>nodes[n].land))cells.push(k.map(n=>nodes[n]))}
+ const acc=['#22e6ff','#18ffa0','#ff3cf0','#ffb43c','#4d8bff'];
+ const bl=[];
+ cells.forEach(([A,B,C,D],ci)=>{
+  const cxp=(A.x+C.x)/2,cyp=(A.y+C.y)/2;
+  if(R()<.1){bl.push({park:1,A,B,C,D});return}
+  for(const u of [.28,.72])for(const v of [.28,.72]){
+   const x=(A.x*(1-u)+B.x*u)*(1-v)+(D.x*(1-u)+C.x*u)*v,y=(A.y*(1-u)+B.y*u)*(1-v)+(D.y*(1-u)+C.y*u)*v;
+   const dd=Math.exp(-(((x-52)/18)**2+((y-46)/16)**2));
+   bl.push({x:px(x),y:py(y),w:20+R()*18,d:16+R()*14,h:(10+R()*34)*(1+dd*2.4),c:pick(acc),dd})}
+ });
+ bl.filter(b=>b.park).forEach(b=>{g.fillStyle='rgba(20,90,50,.55)';g.beginPath();g.moveTo(px(b.A.x)+10,py(b.A.y)+10);g.lineTo(px(b.B.x)-10,py(b.B.y)+10);g.lineTo(px(b.C.x)-10,py(b.C.y)-10);g.lineTo(px(b.D.x)+10,py(b.D.y)-10);g.fill();for(let t=0;t<14;t++){g.fillStyle='rgba(60,220,110,.55)';const tx=px((b.A.x+b.C.x)/2)+(R()-.5)*70,ty=py((b.A.y+b.C.y)/2)+(R()-.5)*60;g.beginPath();g.arc(tx,ty,3,0,7);g.fill()}});
+ bl.filter(b=>!b.park).sort((a,b)=>a.y-b.y).forEach(b=>{
+  const x0=b.x-b.w/2,top=b.y-b.h,ro=b.d*.5;
+  g.fillStyle='rgba(0,0,0,.45)';g.fillRect(x0+4,b.y-2,b.w,6);
+  const fg=g.createLinearGradient(0,top,0,b.y);fg.addColorStop(0,'#10242b');fg.addColorStop(1,'#050d10');g.fillStyle=fg;g.fillRect(x0,top,b.w,b.h);
+  g.fillStyle='#0a171c';g.beginPath();g.moveTo(x0+b.w,b.y);g.lineTo(x0+b.w+5,b.y-ro*.4);g.lineTo(x0+b.w+5,top-ro);g.lineTo(x0+b.w,top);g.fill();
+  g.fillStyle=b.dd>.5?'#16414d':'#12303a';g.beginPath();g.moveTo(x0,top);g.lineTo(x0+b.w,top);g.lineTo(x0+b.w+5,top-ro);g.lineTo(x0+5,top-ro);g.fill();
+  g.strokeStyle=b.c;g.globalAlpha=.55;g.lineWidth=1;g.strokeRect(x0+.5,top+.5,b.w-1,b.h-1);g.globalAlpha=1;
+  for(let wy=top+4;wy<b.y-4;wy+=6)for(let wx=x0+3;wx<x0+b.w-3;wx+=5){if(R()<.5){g.fillStyle=R()<.8?'rgba(255,230,160,'+(.4+R()*.5)+')':'rgba(120,240,255,.7)';g.fillRect(wx,wy,2,3)}}
+  if(R()<.12||b.dd>.7&&R()<.3){g.save();g.shadowColor=b.c;g.shadowBlur=12;g.fillStyle=b.c;g.fillRect(x0+3,top-ro+1,Math.max(6,b.w-8),2);g.restore()}
+ });
+ const cx=px(52),cy=py(46);g.save();g.shadowColor='#22e6ff';g.shadowBlur=16;g.strokeStyle='#bff';g.lineWidth=2;g.beginPath();g.moveTo(cx,cy-175);g.lineTo(cx,cy-120);g.stroke();g.restore();
+ g.globalCompositeOperation='lighter';let rg=g.createRadialGradient(cx,cy,10,cx,cy,260);rg.addColorStop(0,'rgba(34,230,255,.2)');rg.addColorStop(1,'rgba(34,230,255,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
+ rg=g.createRadialGradient(px(76),py(62),5,px(76),py(62),140);rg.addColorStop(0,'rgba(255,60,240,.14)');rg.addColorStop(1,'rgba(255,60,240,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);g.globalCompositeOperation='source-over';
+ const v=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.62);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.72)');g.fillStyle=v;g.fillRect(0,0,W,H);
+}
+/* live overlay */
+const live=$('#liveCv');live.width=1200;live.height=640;const lx=live.getContext('2d');
+const AM={};
+const near=(x,y)=>{let b=-1,bd=1e9;nodes.forEach((n,k)=>{if(n.land&&n.nb.length>1){const d=(n.x-x)**2+(n.y-y)**2;if(d<bd){bd=d;b=k}}});return b};
+[['commander',50,44],['builder',50,68],['sentinel',68,38],['game',30,62],['biz',38,24]].forEach(([id,x,y])=>{const k=near(x,y);AM[id]={x:nodes[k].x,y:nodes[k].y,from:k,prev:-1,to:k,wait:rnd(.2,1.5)}});
+function nextNode(m){const nb=nodes[m.from].nb;let c=nb.filter(n=>n!==m.prev);if(!c.length)c=nb;return c.length?pick(c):m.from}
+const cars=Array.from({length:70},()=>({e:rint(0,edges.length-1),t:Math.random(),dir:Math.random()<.5?1:-1,sp:rnd(.05,.16),col:Math.random()<.5?'#ffffff':'#ff3b3b'}));
+let last=performance.now();
+function frame(now){
+ const dt=Math.min(.1,(now-last)/1000);last=now;
+ const sp=5*S.set.speed;
+ for(const a of AG){
+  const m=AM[a.id];if(S.agents[a.id].offline)continue;
+  if(m.wait>0){m.wait-=dt;if(m.wait<=0&&m.to===m.from){m.to=nextNode(m)}continue}
+  const T=nodes[m.to],dx=T.x-m.x,dy=(T.y-m.y)*1.5,d=Math.hypot(dx,dy),st=sp*dt;
+  if(d<=st){m.x=T.x;m.y=T.y;m.prev=m.from;m.from=m.to;m.to=nextNode(m);m.wait=rnd(.5,2.2)}
+  else{m.x+=dx/d*st;m.y+=(T.y-m.y)/d*st*1.5}
+ }
+ lx.clearRect(0,0,1200,640);
+ if(edges.length&&S.set.anim){cars.forEach(c=>{c.t+=c.dir*c.sp*dt*S.set.speed;if(c.t>1||c.t<0){c.e=rint(0,edges.length-1);c.t=c.dir>0?0:1}const e=edges[c.e],A=nodes[e.a],B=nodes[e.b],x=(A.x+(B.x-A.x)*c.t)*12,y=(A.y+(B.y-A.y)*c.t)*6.4;lx.save();lx.shadowColor=c.col;lx.shadowBlur=8;lx.fillStyle=c.col;lx.fillRect(x-1.5,y-1.5,3,3);lx.restore()})}
+ for(const a of AG){
+  const m=AM[a.id],off=S.agents[a.id].offline;
+  const mk=$('#mk_'+a.id);if(mk){mk.style.left=m.x+'%';mk.style.top=m.y+'%'}
+  const rd=$('#rd_'+a.id);if(rd){rd.style.left=(m.x)+'%';rd.style.top=(m.y)+'%'}
+  if(off)continue;
+  const T=nodes[m.to];lx.save();lx.strokeStyle=a.color;lx.globalAlpha=.7;lx.lineWidth=2;lx.setLineDash([6,6]);lx.lineDashOffset=-now/40;lx.shadowColor=a.color;lx.shadowBlur=8;lx.beginPath();lx.moveTo(m.x*12,m.y*6.4);lx.lineTo(T.x*12,T.y*6.4);lx.stroke();lx.restore();
+  if(a.id==='sentinel'){const r=14+((now/40)%46);lx.save();lx.strokeStyle=a.color;lx.globalAlpha=1-r/60;lx.lineWidth=2;lx.beginPath();lx.arc(m.x*12,m.y*6.4,r,0,7);lx.stroke();lx.restore()}
+ }
+ requestAnimationFrame(frame);
+}
+function buildMarkers(){
+ $('#markers').innerHTML=AG.map(a=>`<div class="mk" id="mk_${a.id}" data-act="agent" data-id="${a.id}" style="--ac:${a.color}" title="${a.name}"><div class="pin">${portrait(a,46)}</div><div class="arr"></div><div class="lbl"><b>${a.name}</b><small>${a.role}</small></div></div>`).join('');
+ $('#radar').innerHTML=AG.map(a=>`<i id="rd_${a.id}" style="--ac:${a.color}"></i>`).join('');
+}
+/* zoom & pan */
+let Z=1,TX=0,TY=0;
+function applyMap(){const m=$('#map');const w=m.clientWidth,h=m.clientHeight;TX=Math.min(0,Math.max(w-w*Z,TX));TY=Math.min(0,Math.max(h-h*Z,TY));const i=$('#mapInner');i.style.transform=`translate(${TX}px,${TY}px) scale(${Z})`;i.style.setProperty('--inv',1/Z);m.style.touchAction=Z>1?'none':'pan-y'}
+function zoom(f){const m=$('#map'),cx=m.clientWidth/2,cy=m.clientHeight/2,o=Z;Z=Math.min(2.6,Math.max(1,Z*f));TX=cx-(cx-TX)*(Z/o);TY=cy-(cy-TY)*(Z/o);applyMap()}
+function zreset(){Z=1;TX=0;TY=0;applyMap()}
+(()=>{const m=$('#map');let dn=false,sx=0,sy=0,ox=0,oy=0;
+ m.addEventListener('pointerdown',e=>{if(e.target.closest('.mctl'))return;dn=true;sx=e.clientX;sy=e.clientY;ox=TX;oy=TY;dragMoved=false});
+ window.addEventListener('pointermove',e=>{if(!dn||Z===1)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;TX=ox+dx;TY=oy+dy;applyMap()});
+ window.addEventListener('pointerup',()=>{dn=false});
+ m.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.15:1/1.15)},{passive:false});
+ window.addEventListener('resize',applyMap)})();
+ 
+/* ---------- header bits ---------- */
+function clock(){const d=new Date();$('#clkT').textContent=pad(d.getHours())+':'+pad(d.getMinutes());$('#clkD').textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
+(()=>{const c=$('#rain'),g=c.getContext('2d'),cols=Array.from({length:14},()=>Math.random()*84);
+ setInterval(()=>{g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,140,84);g.fillStyle='#18ffa0';g.font='10px monospace';cols.forEach((y,i)=>{g.fillText(Math.random()<.5?'0':'1',i*10,y);cols[i]=y>84&&Math.random()>.9?0:y+9})},120)})();
+ 
+/* ---------- boot ---------- */
+applyTheme();buildMarkers();drawCity();renderNav();$('#hArt').innerHTML=`<div style="position:absolute;right:0;bottom:-6px;width:84px;height:84px;border-radius:50% 50% 0 0;overflow:hidden;filter:drop-shadow(0 0 10px var(--g))">${portrait(AGN.commander,84)}</div>`;
+clock();setInterval(clock,10000);
+renderDyn();applyMap();startTick();requestAnimationFrame(frame);
+if(location.hash){const h=location.hash.slice(1);if(NAV.some(n=>n[0]===h))go(h)}
+})();
 </script>
 </body>
 </html>
+ 
+Claude finished the response
