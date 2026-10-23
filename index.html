@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050807">
+
+<title>ZUKINPRO Creator Hub</title>
+
+<style>
+:root {
+  --bg: #050807;
+  --panel: #101713;
+  --green: #39ff88;
+  --muted: #9aaba0;
+  --border: #26382c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #f0fff4;
+  font-family: system-ui, Arial, sans-serif;
+}
+
+header {
+  padding: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  color: var(--green);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+header p {
+  color: var(--muted);
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px;
+}
+
+.status {
+  color: var(--green);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: clamp(27px, 6vw, 42px);
+  margin: 8px 0;
+}
+
+.intro {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 17px;
+}
+
+.card .icon {
+  font-size: 27px;
+}
+
+.card h2 {
+  font-size: 17px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+button {
+  background: var(--green);
+  color: #041008;
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-weight: 750;
+  cursor: pointer;
+  width: 100%;
+}
+
+button.secondary {
+  background: #1b2920;
+  color: var(--green);
+  border: 1px solid var(--border);
+}
+
+.ai {
+  margin-top: 18px;
+  padding: 18px;
+  background: #0b1510;
+  border: 1px solid #285438;
+  border-radius: 14px;
+}
+
+.ai h2 {
+  color: var(--green);
+  font-size: 18px;
+}
+
+input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 13px;
+  border-radius: 8px;
+  background: #050807;
+  border: 1px solid var(--border);
+  color: white;
+  font-size: 15px;
+}
+
+#result {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+footer {
+  padding: 25px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 450px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  main {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ZUKINPRO OS</div>
+  <p>ONE SYSTEM. LIMITLESS POSSIBILITIES.</p>
+</header>
+
+<main>
+
+  <div class="status">● CREATOR HUB · PROTOTYPE</div>
+
+  <h1>Your digital world.</h1>
+
+  <p class="intro">
+    Gaming, livestreaming, content creation and security
+    brought together in one intelligent environment.
+  </p>
+
+  <section class="grid">
+
+    <article class="card">
+      <div class="icon">🎮</div>
+      <h2>Play Mode</h2>
+      <p>Discover games and prepare your gaming environment.</p>
+      <button onclick="openMode('Play Mode')">
+        Explore gaming
+      </button>
+    </article>
+
+    <article class="card">
+      <div class="icon">📡</div>
+      <h2>Stream Mode</h2>
+      <p>Prepare IRL streams, Twitch broadcasts and live video.</p>
+      <button onclick="openMode('Stream Mode')">
+        Prepare a stream
+      </button>
+    </article>
+
+    <article class="card">
+      <div class="icon">🎬</div>
+      <h2>Creator Mode</h2>
+      <p>Organise recordings, highlights and content ideas.</p>
+      <button onclick="openMode('Creator Mode')">
+        Create content
+      </button>
+    </article>
+
+    <article class="card">
+      <div class="icon">🛡️</div>
+      <h2>Security Engine</h2>
+      <p>Plan authorised security checks and understand results.</p>
+      <button onclick="openMode('Security Engine')">
+        Explore security
+      </button>
+    </article>
+
+  </section>
+
+  <section class="ai">
+    <h2>🥷 ZUKINPRO AI ASSISTANT</h2>
+
+    <p class="intro">
+      What would you like your digital assistant to help you with?
+    </p>
+
+    <form id="commandForm">
+      <input
+        id="command"
+        type="text"
+        placeholder="e.g. Prepare my first livestream"
+        aria-label="Describe your task"
+        required
+      >
+
+      <button type="submit">Submit command</button>
+    </form>
+
+    <p id="result" aria-live="polite">
+      System ready. Enter a task to see a demonstration.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  ZUKINPRO OS · EARLY DEVELOPMENT<br>
+  A Linux-based project in development.
+</footer>
+
+<script>
+function openMode(mode) {
+  document.getElementById("result").textContent =
+    mode + " selected. This prototype demonstrates the interface. " +
+    "Real integrations will be added and tested during development.";
+  document.getElementById("command").value =
+    "Help me with " + mode;
+}
+
+document.getElementById("commandForm").addEventListener(
+  "submit",
+  function(event) {
+    event.preventDefault();
+
+    const command =
+      document.getElementById("command").value.trim();
+
+    if (!command) return;
+
+    document.getElementById("result").textContent =
+      "Demo received: " + command +
+      ". No external actions were performed. " +
+      "A future AI engine will analyse tasks, " +
+      "propose a plan and request approval when needed.";
+  }
+);
+</script>
+
+</body>
+</html>
