@@ -43,7 +43,7 @@ select option{background:#04120e}
 /* main */
 #main{grid-area:main;min-width:0}
 #viewMap{padding:10px}
-.vh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.vh{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
 .vh h2{font-family:Orbitron;font-size:25px;letter-spacing:1px}
 .vh p{color:#bff5de;font-size:16px}
 .live{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--g);color:var(--g);padding:3px 14px;border-radius:6px;font-family:Orbitron;font-size:13px;box-shadow:0 0 10px rgba(24,255,160,.4)}
@@ -153,6 +153,12 @@ select option{background:#04120e}
 #tForm input{flex:1;border:0;background:none;box-shadow:none;font-family:inherit;color:#fff;padding:6px 0;min-width:0}
 .dh{display:grid;grid-template-columns:90px 1fr;gap:14px;margin-bottom:12px}
 .dh .pt{width:90px;height:90px;border-radius:12px;overflow:hidden;border:2px solid var(--ac)}.dh .pt svg{width:100%;height:100%;display:block}
+.demo{display:inline-block;font-family:Orbitron;font-size:9px;letter-spacing:1px;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:1px 6px;background:rgba(255,194,26,.08)}
+.demoNote{display:inline-block;color:var(--warn);font-size:12px;letter-spacing:.5px}
+.ac{position:relative}.ac .demo{position:absolute;right:8px;top:8px}
+.mk:before{content:"";position:absolute;left:50%;bottom:-8px;width:40px;height:14px;margin-left:-20px;border:2px solid var(--ac);border-radius:50%;opacity:.7;animation:ring 1.8s ease-out infinite;pointer-events:none}
+@keyframes ring{from{transform:scale(.4);opacity:.9}to{transform:scale(1.5);opacity:0}}
+body.paused .heli,body.paused .mk .arr,body.paused .mk:before,body.paused .radar:before,body.paused .live i{animation-play-state:paused}
 @media(max-width:1100px){
  .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"hd" "nav" "main" "side" "bot"}
  #hd{grid-template-columns:1fr auto;gap:10px}.tag,.hart{display:none}.sys{grid-column:1/-1;border:0;padding:0}.brand h1{font-size:26px}
@@ -164,9 +170,9 @@ select option{background:#04120e}
  #cards{grid-template-columns:repeat(2,minmax(0,1fr))}#botrow{grid-template-columns:1fr}
  .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
  .mk .lbl{display:none}.mk .pin{width:34px;height:34px}.radar{width:78px;height:78px}.mstat{left:94px;font-size:12px;padding:4px 8px}
- .heli{width:30px}.coord{font-size:9px}
+ .heli{width:30px}.coord{font-size:9px}#map{aspect-ratio:1200/780}
 }
-@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}#cards{grid-template-columns:1fr}.vh h2{font-size:19px}#tlog{grid-template-columns:1fr}.dream{border:0;padding:0}}
+@media(max-width:600px){.radar{display:none}.mstat{left:8px;font-size:11px;line-height:1.35;padding:4px 8px}.brand p{letter-spacing:2px;font-size:10px;white-space:nowrap}.brand h1{font-size:22px}.brand svg{width:40px;height:40px}.g2,.g3,.g4{grid-template-columns:1fr}#cards{grid-template-columns:1fr}.vh h2{font-size:19px}#tlog{grid-template-columns:1fr}.dream{border:0;padding:0}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -189,8 +195,8 @@ select option{background:#04120e}
  <main id="main">
   <section id="viewMap" class="panel">
    <div class="vh">
-    <div><h2>AI AGENT WORLD</h2><p>Your team. Your mission. Fully automated.</p></div>
-    <span class="live"><i></i>LIVE</span>
+    <div><h2>AI AGENT WORLD</h2><p>Your team. Your mission. Fully automated.</p><p><small class="demoNote">DEMO · agent activity is simulated — no real AI, scans or game launches</small></p></div>
+    <span class="row"><button class="btn xs" id="pauseTxt" data-act="pause">⏸ Pause</button><span class="live"><i></i>LIVE DEMO</span></span>
    </div>
    <div id="map">
     <div id="mapInner">
@@ -203,7 +209,7 @@ select option{background:#04120e}
     <div class="coord">LOS SANTOS<br>33.9747° N<br>118.2426° W</div>
     <div class="radar" id="radar"></div>
     <div class="mstat">Active Agents : <b id="sA">5</b><br>Running Tasks : <b id="sT">7</b><br>Uptime : <b id="sU">99.4%</b></div>
-    <div class="mctl"><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="zreset" aria-label="Reset view">⌖</button></div>
+    <div class="mctl"><button id="btnPause" data-act="pause" aria-label="Pause or resume agents">⏸</button><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="zreset" aria-label="Reset view">⌖</button></div>
    </div>
   </section>
   <section id="viewOther" class="panel view" hidden></section>
@@ -275,7 +281,7 @@ function download(name,text){const a=document.createElement('a');a.href=URL.crea
 const AG=[
  {id:'commander',name:'COMMANDER',role:'Manager / Strategy',color:'#1fe8ff',ic:'♛',L:'A',desc:'Planning, strategy and task delegation across the whole team.',phases:['Planning...','Assigning tasks...','Monitoring...'],pool:['Review weekly goals','Prioritize backlog','Sync all agents','Draft growth roadmap'],cls:'cm'},
  {id:'builder',name:'BUILDER',role:'Development / Projects',color:'#2dff6a',ic:'⚙',L:'B',desc:'Coding, website projects and deployment.',phases:['Coding...','Testing...','Deploying...'],pool:['Refactor dashboard UI','Write README docs','Optimize page load','Polish mobile layout'],cls:'bd'},
- {id:'sentinel',name:'SENTINEL',role:'Security / Monitoring',color:'#2f8bff',ic:'⛨',L:'S',desc:'Authorized security checks, monitoring and defensive analysis.',phases:['Scanning...','Checking logs...','Threats: 0'],pool:['Review login attempts','Check open ports (own machine)','Verify system updates','Audit firewall rules'],cls:'sn'},
+ {id:'sentinel',name:'SENTINEL',role:'Security / Monitoring',color:'#2f8bff',ic:'⛨',L:'S',desc:'Authorized security checks, monitoring and defensive analysis.',phases:['Simulating scan...','Reviewing logs...','Report ready'],pool:['Review login attempts','Check open ports (own machine)','Verify system updates','Audit firewall rules'],cls:'sn'},
  {id:'game',name:'GAME MASTER',role:'Gaming / Entertainment',color:'#c34bff',ic:'🎮',L:'G',desc:'Game library, setup, performance tools and entertainment workflows.',phases:['Setup game...','Optimize settings...','Ready to play'],pool:['Update game library','Tune graphics presets','Check storage space','Plan gaming session'],cls:'gm'},
  {id:'biz',name:'BIZ AGENT',role:'Business / Money',color:'#ffc21a',ic:'$',L:'B',desc:'Business research, client prospecting, outreach drafts and revenue ideas.',phases:['Research...','Contacting...','Opportunities...'],pool:['Research freelance niches','Draft outreach messages','Review pricing ideas','Check client replies'],cls:'bz'}
 ];
@@ -295,15 +301,15 @@ function portrait(a,sz){
 }
  
 /* ---------- state ---------- */
-const KEY='zukinpro_os_v1';
+const KEY='zukinpro_os_v2';
 let S;
 function defaults(){
  const now=Date.now(),m=x=>now-x*60000,q=(title,total,done)=>({title,total,done});
- return{v:1,
+ return{v:2,
   agents:{commander:{offline:false,queue:[q('Optimize workflow',20,15),q('Weekly strategy review',12,0)]},builder:{offline:false,queue:[q('Website + AI Tools',20,12),q('Deploy ZUKINPRO OS v1.0',15,0)]},sentinel:{offline:false,queue:[q('System scan & protect',20,18)]},game:{offline:false,queue:[q('NFS Underground',20,9)]},biz:{offline:false,queue:[q('Find USD clients',20,7)]}},
-  logs:[{ts:m(15),a:'COMMANDER',m:'Strategy updated — focus: Growth & Freedom'},{ts:m(12),a:'BIZ AGENT',m:'Checked client opportunities (0 new)'},{ts:m(7),a:'GAME MASTER',m:'Launched NFS Underground (offline mode)'},{ts:m(4),a:'SENTINEL',m:'System scan complete — no threats detected'},{ts:m(2),a:'BUILDER',m:'Finished project setup'},{ts:now,a:'SYSTEM',m:'All agents online. Mission continues.'}],
+  logs:[{ts:m(15),a:'COMMANDER',m:'Strategy updated — focus: Growth & Freedom'},{ts:m(12),a:'BIZ AGENT',m:'Client search task idle'},{ts:m(7),a:'GAME MASTER',m:'Session for NFS Underground queued (no game started)'},{ts:m(4),a:'SENTINEL',m:'Scan task finished (simulated, no real scan)'},{ts:m(2),a:'BUILDER',m:'Finished project setup'},{ts:now,a:'SYSTEM',m:'DEMO MODE — agent activity is simulated'}],
   ticks:1000,on:994,
-  set:{user:'Feiz',accent:'#18ffa0',speed:1,auto:true,anim:true},
+  set:{user:'Feiz',accent:'#18ffa0',speed:1,auto:true,anim:true,paused:false},
   games:[{n:'NFS Underground',s:'Ready'},{n:'GTA San Andreas',s:'Installed'},{n:'Minecraft',s:'Installed'}],
   perf:{bg:true,low:true,fps:false,gov:false,ram:true},
   proj:[{n:'ZUKINPRO OS Website',p:40},{n:'AI Tools Hub',p:15},{n:'Custom Plymouth Boot Splash',p:70}],
@@ -312,11 +318,12 @@ function defaults(){
   paper:{cash:10000,hold:{}}
  };
 }
-function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&j.v===1){const d=defaults();return Object.assign(d,j,{set:Object.assign(d.set,j.set),perf:Object.assign(d.perf,j.perf)})}}catch(e){}return defaults()}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&j.v===2){const d=defaults();return Object.assign(d,j,{set:Object.assign(d.set,j.set),perf:Object.assign(d.perf,j.perf)})}}catch(e){}return defaults()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 S=load();
 if(S.fit.date!==today()){S.fit.water=0;S.fit.date=today()}
-function log(a,m){S.logs.push({ts:Date.now(),a,m});if(S.logs.length>300)S.logs.splice(0,S.logs.length-300)}
+function log(a,m,real){S.logs.push({ts:Date.now(),a,m,real:!!real});if(S.logs.length>300)S.logs.splice(0,S.logs.length-300)}
+const isDemo=l=>!l.real&&l.a!=='SYSTEM';
 const phase=t=>Math.min(2,Math.floor(t.done/t.total*3));
 const status=id=>S.agents[id].offline?'offline':(S.agents[id].queue.length?'working':'idle');
 const prog=id=>{const t=S.agents[id].queue[0];return t?Math.round(t.done/t.total*100):0};
@@ -327,6 +334,7 @@ function applyTheme(){document.documentElement.style.setProperty('--g',S.set.acc
  
 /* ---------- task engine ---------- */
 function tick(){
+ if(S.set.paused)return;
  S.ticks++;let on=0;
  for(const a of AG){
   const st=S.agents[a.id];if(st.offline)continue;on++;
@@ -387,8 +395,8 @@ function vHome(){
 }
 function vGames(){
  const pf=[['bg','Close background apps before playing'],['low','Use a low graphics preset (4 GB RAM laptop)'],['fps','Cap FPS at 30 to reduce heat'],['gov','Set CPU governor to performance (Linux)'],['ram','Check free RAM first (htop)']];
- return head('GAMES — GAME MASTER','Library, launch workflow and performance checklist')+
- `<div class="grid g2"><div class="card"><h3>GAME LIBRARY</h3><div class="list">${S.games.map((g,i)=>`<div class="li"><span><b>${esc(g.n)}</b> <span class="dim sm">· ${esc(g.s)}</span></span><span class="row"><button class="btn xs" data-act="launch" data-i="${i}">▶ Launch</button><button class="btn xs warn" data-act="rmgame" data-i="${i}">✕</button></span></div>`).join('')||'<p class="dim">No games yet.</p>'}</div>
+ return head('GAMES — GAME MASTER','Library and performance checklist — launching is a demo task, no game is started')+
+ `<div class="grid g2"><div class="card"><h3>GAME LIBRARY</h3><div class="list">${S.games.map((g,i)=>`<div class="li"><span><b>${esc(g.n)}</b> <span class="dim sm">· ${esc(g.s)}</span></span><span class="row"><button class="btn xs" data-act="launch" data-i="${i}">▶ Demo launch</button><button class="btn xs warn" data-act="rmgame" data-i="${i}">✕</button></span></div>`).join('')||'<p class="dim">No games yet.</p>'}</div>
   <form data-form="addgame" class="row" style="margin-top:10px"><input name="n" placeholder="Add a game…" required maxlength="40" style="flex:1"><button class="btn">Add</button></form></div>
   <div class="card"><h3>PERFORMANCE CHECKLIST</h3><div class="list">${pf.map(([k,l])=>`<label class="li"><span>${l}</span><input type="checkbox" data-chk="${k}" ${S.perf[k]?'checked':''}></label>`).join('')}</div><p class="dim sm" style="margin-top:8px">This is a personal checklist — it does not change system settings.</p></div></div>`;
 }
@@ -398,8 +406,8 @@ function secChecks(){
 }
 function vCyber(){
  const cmds=['sudo apt update && sudo apt full-upgrade','sudo ufw enable','sudo ss -tulpn','sudo apt install lynis && sudo lynis audit system'];
- return head('CYBERSECURITY — SENTINEL','Authorized, defensive checks on your own devices only')+
- `<div class="grid g2"><div class="card"><h3>BROWSER SECURITY CHECK</h3><div id="secOut" class="list"><p class="dim sm">Press the button to run real checks on this browser.</p></div><button class="btn" style="margin-top:10px" data-act="seccheck">Run check</button></div>
+ return head('CYBERSECURITY — SENTINEL','The browser check is real; agent scans are simulated. Use on devices you own only')+
+ `<div class="grid g2"><div class="card"><h3>BROWSER SECURITY CHECK (REAL)</h3><div id="secOut" class="list"><p class="dim sm">Press the button to run real checks on this browser.</p></div><button class="btn" style="margin-top:10px" data-act="seccheck">Run check</button></div>
  <div class="card"><h3>HARDENING COMMANDS (YOUR OWN LINUX)</h3><div class="list">${cmds.map((c,i)=>`<div class="li"><code class="mono sm" style="word-break:break-all">${esc(c)}</code><button class="btn xs" data-act="copycmd" data-i="${i}">Copy</button></div>`).join('')}</div><p class="dim sm" style="margin-top:8px">Run these only on machines you own or are authorized to manage.</p></div></div>`;
 }
 function vDev(){
@@ -456,20 +464,21 @@ const stLabel=s=>({working:'Online · Working',idle:'Online · Idle',offline:'Of
 function renderDyn(){
  const n=online();
  $('#sCnt').textContent=n+'/5';$('#sA').textContent=n;$('#sT').textContent=tasks();$('#sU').textContent=uptime();
- $('#hStat').textContent=n?'ONLINE':'OFFLINE';$('#hUser').textContent=S.set.user;
+ $('#hStat').textContent=n?(S.set.paused?'PAUSED · DEMO':'ONLINE · DEMO'):'OFFLINE · DEMO';$('#hUser').textContent=S.set.user;
  $('#alist').innerHTML=AG.map(a=>{const s=status(a.id),p=prog(a.id);return`<button class="al" style="--ac:${a.color}" data-act="agent" data-id="${a.id}"><span class="pt">${portrait(a,50)}</span><span><b>${a.name} ${a.ic}</b><small>${a.role}</small><span class="st ${s==='working'?'':s}"><i></i>${s==='offline'?'Offline':s==='idle'?'Idle':'Online'}</span></span><span class="bars">${bars(p)}</span></button>`}).join('');
- $('#feed').innerHTML=S.logs.filter(l=>l.a!=='SYSTEM').slice(-5).reverse().map(l=>`<div class="fi"><i></i><div>${esc(titleCase(l.a))}: ${esc(l.m)}<small>${ago(l.ts)}</small></div></div>`).join('');
+ $('#feed').innerHTML=S.logs.filter(l=>l.a!=='SYSTEM').slice(-5).reverse().map(l=>`<div class="fi"><i></i><div>${esc(titleCase(l.a))}: ${esc(l.m)}<small>${ago(l.ts)}${isDemo(l)?' · DEMO':''}</small></div></div>`).join('');
  $('#cards').innerHTML=AG.map(a=>{const s=status(a.id),st=S.agents[a.id],t=st.queue[0],p=prog(a.id),ph=t?phase(t):-1;
   const lines=a.phases.map((x,i)=>`<div class="${t?(i<ph?'d':i===ph?'c':''):''}"><b>${a.L}${i+1}</b>${x}</div>`).join('');
-  return`<div class="panel ac" style="--ac:${a.color}" data-act="agent" data-id="${a.id}"><div class="top"><span class="pt">${portrait(a,46)}</span><span><b>${a.name}</b><small>${a.role}</small></span></div><div class="tk">${t?'“'+esc(t.title)+'”':'“Standing by”'}</div><div class="pr"><div class="bar" style="--ac:${a.color}"><i style="width:${p}%"></i></div><span>${s==='offline'?'—':p+'%'}</span></div><div class="ph3">${lines}</div><span class="st ${s==='working'?'':s}"><i></i>${s==='offline'?'Offline':s==='idle'?'Idle':'Online'}</span></div>`}).join('');
+  return`<div class="panel ac" style="--ac:${a.color}" data-act="agent" data-id="${a.id}"><div class="top"><span class="pt">${portrait(a,46)}</span><span><b>${a.name}</b><small>${a.role}</small></span></div><span class="demo">DEMO</span><div class="tk">${t?'“'+esc(t.title)+'”':'“Standing by”'}</div><div class="pr"><div class="bar" style="--ac:${a.color}"><i style="width:${p}%"></i></div><span>${s==='offline'?'—':p+'%'}</span></div><div class="ph3">${lines}</div><span class="st ${s==='working'?'':s}"><i></i>${s==='offline'?'Offline':s==='idle'?'Idle':'Online'}</span></div>`}).join('');
  const lg=$('#lg'),stick=lg.scrollTop+lg.clientHeight>=lg.scrollHeight-30;
- lg.innerHTML=S.logs.slice(-40).map(l=>{const a=byName(l.a);return`<div class="L">[${hhmm(l.ts)}] <span class="${a?a.cls:'sy'}">[${esc(l.a)}]</span> ${esc(l.m)}</div>`}).join('');
+ lg.innerHTML=S.logs.slice(-40).map(l=>{const a=byName(l.a);return`<div class="L">[${hhmm(l.ts)}] <span class="${a?a.cls:'sy'}">[${esc(l.a)}${isDemo(l)?' · DEMO':''}]</span> ${esc(l.m)}</div>`}).join('');
  if(stick)lg.scrollTop=lg.scrollHeight;
  AG.forEach(a=>{const e=$('#mk_'+a.id);if(e)e.classList.toggle('off',S.agents[a.id].offline)});
  if(VIEW==='home')renderView();
  liveModal();
 }
 const titleCase=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+function updPause(){const p=!!S.set.paused;document.body.classList.toggle('paused',p);const a=$('#btnPause');if(a){a.textContent=p?'▶':'⏸';a.title=p?'Resume':'Pause'}const b=$('#pauseTxt');if(b)b.textContent=p?'▶ Resume':'⏸ Pause'}
  
 /* ---------- modal ---------- */
 let OPEN=null;
@@ -477,7 +486,7 @@ function modal(title,html){$('#mTitle').textContent=title;$('#mBody').innerHTML=
 function closeModal(){$('#modal').classList.remove('open');$('#mBody').innerHTML='';OPEN=null}
 function agentModal(id){
  const a=AGN[id];OPEN={t:'agent',id};
- modal(a.name,`<div style="--ac:${a.color}"><div class="dh"><span class="pt">${portrait(a,90)}</span><div><b class="orb">${a.name} ${a.ic}</b><div class="dim">${a.role}</div><p class="sm" style="margin:6px 0">${a.desc}</p><span id="dSt"></span></div></div>
+ modal(a.name,`<div style="--ac:${a.color}"><div class="dh"><span class="pt">${portrait(a,90)}</span><div><b class="orb">${a.name} ${a.ic}</b><div class="dim">${a.role}</div><p class="sm" style="margin:6px 0">${a.desc}</p><span id="dSt"></span> <span class="demo">DEMO · simulated task progress</span></div></div>
  <div class="card"><h3>CURRENT TASK</h3><div id="dTask"></div><div class="bar" style="margin:8px 0;--ac:${a.color}"><i id="dBar" style="width:0"></i></div></div>
  <div class="grid g2" style="margin-top:10px"><div class="card"><h3>TASK QUEUE</h3><div id="dQ" class="list"></div>
  <form data-form="atask" data-id="${id}" class="row" style="margin-top:8px"><input name="t" placeholder="Add task…" required maxlength="80" style="flex:1"><button class="btn xs">Add</button></form></div>
@@ -506,7 +515,7 @@ function logsModal(){
  modal('AGENT LOGS',`<div class="row" style="margin-bottom:10px"><select id="lf"><option value="ALL">All agents</option>${AG.map(a=>`<option>${a.name}</option>`).join('')}<option>SYSTEM</option></select><button class="btn xs" data-act="exlogs">Export .txt</button><button class="btn xs warn" data-act="clrlogs">Clear</button></div><div id="lbody" class="mono sm" style="max-height:55vh;overflow:auto"></div>`);
  $('#lf').value=LF;fillLogs();
 }
-function fillLogs(){const el=$('#lbody');if(!el)return;el.innerHTML=S.logs.filter(l=>LF==='ALL'||l.a===LF).slice().reverse().map(l=>`<div style="margin-bottom:3px">[${new Date(l.ts).toLocaleString('en-GB')}] <b>${esc(l.a)}</b> — ${esc(l.m)}</div>`).join('')||'<span class="dim">No entries.</span>'}
+function fillLogs(){const el=$('#lbody');if(!el)return;el.innerHTML=S.logs.filter(l=>LF==='ALL'||l.a===LF).slice().reverse().map(l=>`<div style="margin-bottom:3px">[${new Date(l.ts).toLocaleString('en-GB')}] <b>${esc(l.a)}</b>${isDemo(l)?' <i>(DEMO)</i>':''} — ${esc(l.m)}</div>`).join('')||'<span class="dim">No entries.</span>'}
 function termModal(){
  OPEN=null;
  modal('SYSTEM TERMINAL',`<div class="term"><div id="tOut"></div><form id="tForm"><span>zukin@os:~$</span><input id="tIn" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Command"></form></div><p class="dim sm" style="margin-top:6px">A simulated ZUKINPRO OS console — it controls this dashboard only. Type <b>help</b>.</p>`);
@@ -518,7 +527,7 @@ function termRun(line){
  tp('zukin@os:~$ '+line);const [c,...r]=line.trim().split(/\s+/);const arg=r.join(' ');
  switch((c||'').toLowerCase()){
   case'':break;
-  case'help':tp('help · status · agents · tasks <agent> · assign <agent> <task>\nonline <agent> · offline <agent> · logs [n] · uptime\nwhoami · date · neofetch · open <view> · clear');break;
+  case'help':tp('help · status · agents · tasks <agent> · assign <agent> <task>\nonline <agent> · offline <agent> · logs [n] · uptime\npause · resume · whoami · date · neofetch · open <view> · clear');break;
   case'status':tp(`agents online: ${online()}/5\nrunning tasks: ${tasks()}\nuptime: ${uptime()}`);break;
   case'agents':AG.forEach(a=>tp(`${a.name.padEnd(12)} ${status(a.id).padEnd(8)} ${prog(a.id)}%`));break;
   case'tasks':{const a=findAg(r[0]);if(!a)return tp('usage: tasks <agent>');const q=S.agents[a.id].queue;tp(q.length?q.map((t,i)=>`${i+1}. ${t.title} (${Math.round(t.done/t.total*100)}%)`).join('\n'):'queue empty');break}
@@ -526,6 +535,7 @@ function termRun(line){
   case'online':case'offline':{const a=findAg(r[0]);if(!a)return tp('usage: '+c+' <agent>');S.agents[a.id].offline=c==='offline';log('SYSTEM',a.name+' set '+c);save();renderDyn();tp(a.name+' is now '+c);break}
   case'logs':{const n=Math.min(30,parseInt(r[0])||8);S.logs.slice(-n).forEach(l=>tp(`[${hhmm(l.ts)}] [${l.a}] ${l.m}`));break}
   case'uptime':tp(uptime());break;
+  case'pause':case'resume':{S.set.paused=c==='pause';save();updPause();renderDyn();tp('simulation '+(S.set.paused?'paused':'resumed'));break}
   case'whoami':tp(S.set.user+' (ZUKINPRO)');break;
   case'date':tp(new Date().toString());break;
   case'neofetch':tp(`  ZUKINPRO OS (web)\n  user: ${S.set.user}\n  agents: ${online()}/5 online\n  browser: ${navigator.userAgent.slice(0,50)}…`);break;
@@ -544,6 +554,7 @@ document.addEventListener('click',e=>{
  const d=t.dataset,act=d.act,i=+d.i;
  switch(act){
   case'nav':go(d.v);break;
+  case'pause':S.set.paused=!S.set.paused;log('SYSTEM','Simulation '+(S.set.paused?'paused':'resumed'));save();updPause();renderDyn();break;
   case'close':closeModal();break;
   case'agent':agentModal(d.id);break;
   case'assign':assignModal();break;
@@ -555,13 +566,13 @@ document.addEventListener('click',e=>{
   case'rmtask':S.agents[d.id].queue.splice(i,1);log('COMMANDER','Removed a task from '+AGN[d.id].name);save();renderDyn();break;
   case'exlogs':download('zukinpro-logs.txt',S.logs.map(l=>`[${new Date(l.ts).toISOString()}] [${l.a}] ${l.m}`).join('\n'));break;
   case'clrlogs':S.logs=[{ts:Date.now(),a:'SYSTEM',m:'Logs cleared'}];save();fillLogs();renderDyn();break;
-  case'launch':{const g=S.games[i];S.agents.game.queue.unshift({title:'Launching '+g.n,total:8,done:0});log('GAME MASTER','Launching '+g.n);save();renderDyn();break}
+  case'launch':{const g=S.games[i];S.agents.game.queue.unshift({title:'Demo launch: '+g.n,total:8,done:0});log('GAME MASTER','Demo launch task for '+g.n+' (no game is actually started)');save();renderDyn();break}
   case'rmgame':S.games.splice(i,1);save();renderView();break;
-  case'seccheck':{const r=secChecks();$('#secOut').innerHTML=r.map(([l,ok])=>`<div class="li"><span>${l}</span><b class="${ok?'ok':'no'}">${ok?'PASS':'REVIEW'}</b></div>`).join('')+`<div class="li"><span class="sm dim">${esc(navigator.platform||'')} · ${navigator.hardwareConcurrency||'?'} cores · ${esc(navigator.language)}</span></div>`;log('SENTINEL','Browser security check: '+r.filter(x=>x[1]).length+'/'+r.length+' passed');save();renderDyn();break}
+  case'seccheck':{const r=secChecks();$('#secOut').innerHTML=r.map(([l,ok])=>`<div class="li"><span>${l}</span><b class="${ok?'ok':'no'}">${ok?'PASS':'REVIEW'}</b></div>`).join('')+`<div class="li"><span class="sm dim">${esc(navigator.platform||'')} · ${navigator.hardwareConcurrency||'?'} cores · ${esc(navigator.language)}</span></div>`;log('SENTINEL','REAL browser check: '+r.filter(x=>x[1]).length+'/'+r.length+' passed',true);save();renderDyn();break}
   case'copycmd':copy(['sudo apt update && sudo apt full-upgrade','sudo ufw enable','sudo ss -tulpn','sudo apt install lynis && sudo lynis audit system'][i]);t.textContent='Copied';break;
-  case'projup':S.proj[i].p=Math.min(100,S.proj[i].p+10);log('BUILDER',S.proj[i].n+' → '+S.proj[i].p+'%');save();renderView();renderDyn();break;
+  case'projup':S.proj[i].p=Math.min(100,S.proj[i].p+10);log('BUILDER',S.proj[i].n+' → '+S.proj[i].p+'%',true);save();renderView();renderDyn();break;
   case'rmproj':S.proj.splice(i,1);save();renderView();break;
-  case'lead':S.leads[i].stage++;log('BIZ AGENT',S.leads[i].name+' → '+STG[S.leads[i].stage]);save();renderView();renderDyn();break;
+  case'lead':S.leads[i].stage++;log('BIZ AGENT',S.leads[i].name+' → '+STG[S.leads[i].stage],true);save();renderView();renderDyn();break;
   case'rmlead':S.leads.splice(i,1);save();renderView();break;
   case'copydraft':{const v=$('#draftOut').value;if(v){copy(v);t.textContent='Copied'}break}
   case'buy':{const k=d.k;if(S.paper.cash>=100){S.paper.cash-=100;S.paper.hold[k]=(S.paper.hold[k]||0)+100/PX[k];save();updCrypto()}break}
@@ -582,9 +593,9 @@ document.addEventListener('submit',e=>{
   case'assign':if(addTask(v.a,v.t,+v.s)){closeModal()}break;
   case'atask':addTask(f.dataset.id,v.t);f.reset();break;
   case'addgame':S.games.push({n:v.n.trim(),s:'Installed'});save();renderView();break;
-  case'addproj':S.proj.push({n:v.n.trim(),p:0});log('BUILDER','New project: '+v.n.trim());save();renderView();renderDyn();break;
-  case'addlead':S.leads.push({name:v.name.trim(),svc:v.svc.trim(),val:Math.max(0,+v.val||0),stage:0});log('BIZ AGENT','New lead: '+v.name.trim());save();renderView();renderDyn();break;
-  case'draft':$('#draftOut').value=`Hi ${v.who},\n\nI'm ${S.set.user} from ZUKINPRO. I came across ${v.biz} and think it could benefit from ${v.svc}. I help small businesses with quick, affordable ${v.svc} and would love to show you a few ideas.\n\nWould you be open to a short chat this week?\n\nBest regards,\n${S.set.user}`;log('BIZ AGENT','Outreach draft prepared for '+v.biz);save();renderDyn();break;
+  case'addproj':S.proj.push({n:v.n.trim(),p:0});log('BUILDER','New project: '+v.n.trim(),true);save();renderView();renderDyn();break;
+  case'addlead':S.leads.push({name:v.name.trim(),svc:v.svc.trim(),val:Math.max(0,+v.val||0),stage:0});log('BIZ AGENT','New lead: '+v.name.trim(),true);save();renderView();renderDyn();break;
+  case'draft':$('#draftOut').value=`Hi ${v.who},\n\nI'm ${S.set.user} from ZUKINPRO. I came across ${v.biz} and think it could benefit from ${v.svc}. I help small businesses with quick, affordable ${v.svc} and would love to show you a few ideas.\n\nWould you be open to a short chat this week?\n\nBest regards,\n${S.set.user}`;log('BIZ AGENT','Template outreach draft generated for '+v.biz,true);save();renderDyn();break;
   case'addfit':S.fit.log.push({d:today(),ex:v.ex.trim(),min:Math.max(1,+v.min||1)});save();renderView();break;
   case'settings':S.set.user=(v.user||'Feiz').trim()||'Feiz';S.set.accent=v.accent;S.set.speed=+v.speed;S.set.auto=!!v.auto;S.set.anim=!!v.anim;save();applyTheme();startTick();drawCity();renderDyn();renderView();break;
  }
@@ -599,7 +610,7 @@ const edges=[];
 const nid=(i,j)=>NI[i+','+j];
 nodes.forEach((n,k)=>{if(!n.land)return;[[1,0],[0,1]].forEach(([di,dj])=>{const o=nid(n.i+di,n.j+dj);if(o!==undefined&&nodes[o].land){edges.push({a:k,b:o,h:di===1});n.nb.push(o);nodes[o].nb.push(k)}})});
 function drawCity(){
- const c=$('#cityCv');c.width=1200;c.height=640;const g=c.getContext('2d'),W=1200,H=640,px=x=>x*W/100,py=y=>y*H/100;
+ const c=$('#cityCv');c.width=1800;c.height=960;const g=c.getContext('2d'),W=1200,H=640,px=x=>x*W/100,py=y=>y*H/100;g.scale(1.5,1.5);
  let seed=11;const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
  let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#03090c');gr.addColorStop(1,'#03161a');g.fillStyle=gr;g.fillRect(0,0,W,H);
  g.strokeStyle='rgba(34,230,255,.08)';for(let k=0;k<110;k++){const x=R()*W,y=R()*H;g.beginPath();g.moveTo(x,y);g.lineTo(x+20+R()*50,y);g.stroke()}
@@ -608,20 +619,23 @@ function drawCity(){
  const S6=6,coast=[];
  for(let X=0;X<W;X+=S6)for(let Y=0;Y<H;Y+=S6){const x=(X+3)*100/W,y=(Y+3)*100/H;if(isLand(x,y,1)){const cs=!isLand(x+1.3,y,1)||!isLand(x-1.3,y,1)||!isLand(x,y+1.8,1)||!isLand(x,y-1.8,1);g.fillStyle=cs?'#0b3a2c':'#07120f';g.fillRect(X,Y,S6,S6);if(cs)coast.push([X,Y])}}
  g.save();g.shadowColor='#18ffa0';g.shadowBlur=10;g.fillStyle='rgba(24,255,160,.5)';coast.forEach(([X,Y])=>g.fillRect(X+1,Y+1,3,3));g.restore();
+ g.fillStyle='rgba(24,255,160,.10)';coast.forEach(([X,Y])=>{if(R()<.3&&!isLand((X+3)*100/W,(Y+14)*100/H,1))g.fillRect(X+2,Y+8,2,8+R()*20)});
  g.lineCap='round';
  edges.forEach(e=>{const A=nodes[e.a],B=nodes[e.b];g.strokeStyle='#020806';g.lineWidth=11;g.beginPath();g.moveTo(px(A.x),py(A.y));g.lineTo(px(B.x),py(B.y));g.stroke()});
  g.save();g.shadowBlur=8;edges.forEach((e,k)=>{const A=nodes[e.a],B=nodes[e.b],main=(e.h&&A.j%2===0)||(!e.h&&A.i%3===0);g.shadowColor=main?'#18ffa0':'#ffb43c';g.strokeStyle=main?'rgba(24,255,160,.6)':'rgba(255,180,60,.32)';g.lineWidth=main?2.2:1.3;g.beginPath();g.moveTo(px(A.x),py(A.y));g.lineTo(px(B.x),py(B.y));g.stroke()});g.restore();
  const cells=[];
  for(let j=0;j<GH-1;j++)for(let i=0;i<GW-1;i++){const k=[nid(i,j),nid(i+1,j),nid(i+1,j+1),nid(i,j+1)];if(k.every(n=>nodes[n].land))cells.push(k.map(n=>nodes[n]))}
+ g.save();g.strokeStyle='rgba(255,200,120,.17)';g.lineWidth=1;cells.forEach(([A,B,C,D])=>{g.beginPath();g.moveTo(px((A.x+B.x)/2),py((A.y+B.y)/2));g.lineTo(px((D.x+C.x)/2),py((D.y+C.y)/2));g.moveTo(px((A.x+D.x)/2),py((A.y+D.y)/2));g.lineTo(px((B.x+C.x)/2),py((B.y+C.y)/2));g.stroke()});g.restore();
+ g.save();g.lineCap='round';for(const [wd,col,al,bl2] of [[12,'#010605',1,0],[3,'#18ffa0',.7,10],[1,'#ffffff',.55,0]]){g.lineWidth=wd;g.strokeStyle=col;g.globalAlpha=al;g.shadowBlur=bl2;g.shadowColor='#18ffa0';if(wd===1)g.setLineDash([3,11]);g.beginPath();let pen=false;for(let q=0;q<=Math.PI*2+.02;q+=.04){const x=52+39*Math.cos(q),y=52+34.5*Math.sin(q);if(isLand(x,y,.96)){pen?g.lineTo(px(x),py(y)):g.moveTo(px(x),py(y));pen=true}else pen=false}g.stroke()}g.restore();
  const acc=['#22e6ff','#18ffa0','#ff3cf0','#ffb43c','#4d8bff'];
  const bl=[];
  cells.forEach(([A,B,C,D],ci)=>{
   const cxp=(A.x+C.x)/2,cyp=(A.y+C.y)/2;
   if(R()<.1){bl.push({park:1,A,B,C,D});return}
-  for(const u of [.28,.72])for(const v of [.28,.72]){
+  for(const u of [.2,.5,.8])for(const v of [.2,.5,.8]){
    const x=(A.x*(1-u)+B.x*u)*(1-v)+(D.x*(1-u)+C.x*u)*v,y=(A.y*(1-u)+B.y*u)*(1-v)+(D.y*(1-u)+C.y*u)*v;
    const dd=Math.exp(-(((x-52)/18)**2+((y-46)/16)**2));
-   bl.push({x:px(x),y:py(y),w:20+R()*18,d:16+R()*14,h:(10+R()*34)*(1+dd*2.4),c:pick(acc),dd})}
+   bl.push({x:px(x),y:py(y),w:13+R()*13,d:11+R()*10,h:(8+R()*32)*(1+dd*2.6),c:pick(acc),dd})}
  });
  bl.filter(b=>b.park).forEach(b=>{g.fillStyle='rgba(20,90,50,.55)';g.beginPath();g.moveTo(px(b.A.x)+10,py(b.A.y)+10);g.lineTo(px(b.B.x)-10,py(b.B.y)+10);g.lineTo(px(b.C.x)-10,py(b.C.y)-10);g.lineTo(px(b.D.x)+10,py(b.D.y)-10);g.fill();for(let t=0;t<14;t++){g.fillStyle='rgba(60,220,110,.55)';const tx=px((b.A.x+b.C.x)/2)+(R()-.5)*70,ty=py((b.A.y+b.C.y)/2)+(R()-.5)*60;g.beginPath();g.arc(tx,ty,3,0,7);g.fill()}});
  bl.filter(b=>!b.park).sort((a,b)=>a.y-b.y).forEach(b=>{
@@ -633,38 +647,44 @@ function drawCity(){
   g.strokeStyle=b.c;g.globalAlpha=.55;g.lineWidth=1;g.strokeRect(x0+.5,top+.5,b.w-1,b.h-1);g.globalAlpha=1;
   for(let wy=top+4;wy<b.y-4;wy+=6)for(let wx=x0+3;wx<x0+b.w-3;wx+=5){if(R()<.5){g.fillStyle=R()<.8?'rgba(255,230,160,'+(.4+R()*.5)+')':'rgba(120,240,255,.7)';g.fillRect(wx,wy,2,3)}}
   if(R()<.12||b.dd>.7&&R()<.3){g.save();g.shadowColor=b.c;g.shadowBlur=12;g.fillStyle=b.c;g.fillRect(x0+3,top-ro+1,Math.max(6,b.w-8),2);g.restore()}
+  if(b.h>55){const w2=b.w*.58,h2=b.h*.32,x2=x0+(b.w-w2)/2;g.fillStyle='#0d1f26';g.fillRect(x2,top-h2,w2,h2);g.strokeStyle=b.c;g.globalAlpha=.6;g.strokeRect(x2+.5,top-h2+.5,w2-1,h2-1);g.globalAlpha=1;g.fillStyle='#17434f';g.beginPath();g.moveTo(x2,top-h2);g.lineTo(x2+w2,top-h2);g.lineTo(x2+w2+3,top-h2-ro*.5);g.lineTo(x2+3,top-h2-ro*.5);g.fill();for(let wy=top-h2+3;wy<top-3;wy+=5)for(let wx=x2+2;wx<x2+w2-2;wx+=4){if(R()<.5){g.fillStyle='rgba(255,230,160,.75)';g.fillRect(wx,wy,2,2)}}g.save();g.shadowColor='#f33';g.shadowBlur=8;g.fillStyle='#f33';g.fillRect(x2+w2/2,top-h2-ro*.5-6,1.5,6);g.restore()}
  });
+ g.save();g.globalCompositeOperation='lighter';[[-70,'34,230,255'],[10,'255,60,240'],[80,'24,255,160']].forEach(([dx,rgb],k)=>{const x0=px(44+k*8),y0=py(46);const gx=g.createLinearGradient(x0,y0,x0+dx,y0-300);gx.addColorStop(0,'rgba('+rgb+',.28)');gx.addColorStop(1,'rgba('+rgb+',0)');g.fillStyle=gx;g.beginPath();g.moveTo(x0-3,y0);g.lineTo(x0+3,y0);g.lineTo(x0+dx+26,y0-300);g.lineTo(x0+dx-26,y0-300);g.fill()});g.restore();
  const cx=px(52),cy=py(46);g.save();g.shadowColor='#22e6ff';g.shadowBlur=16;g.strokeStyle='#bff';g.lineWidth=2;g.beginPath();g.moveTo(cx,cy-175);g.lineTo(cx,cy-120);g.stroke();g.restore();
  g.globalCompositeOperation='lighter';let rg=g.createRadialGradient(cx,cy,10,cx,cy,260);rg.addColorStop(0,'rgba(34,230,255,.2)');rg.addColorStop(1,'rgba(34,230,255,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
  rg=g.createRadialGradient(px(76),py(62),5,px(76),py(62),140);rg.addColorStop(0,'rgba(255,60,240,.14)');rg.addColorStop(1,'rgba(255,60,240,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);g.globalCompositeOperation='source-over';
+ const fg2=g.createLinearGradient(0,H*.3,0,H*.55);fg2.addColorStop(0,'rgba(20,120,110,0)');fg2.addColorStop(.5,'rgba(20,120,110,.11)');fg2.addColorStop(1,'rgba(20,120,110,0)');g.fillStyle=fg2;g.fillRect(0,H*.3,W,H*.25);
  const v=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.62);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.72)');g.fillStyle=v;g.fillRect(0,0,W,H);
 }
 /* live overlay */
-const live=$('#liveCv');live.width=1200;live.height=640;const lx=live.getContext('2d');
+const live=$('#liveCv');live.width=1800;live.height=960;const lx=live.getContext('2d');lx.scale(1.5,1.5);
 const AM={};
 const near=(x,y)=>{let b=-1,bd=1e9;nodes.forEach((n,k)=>{if(n.land&&n.nb.length>1){const d=(n.x-x)**2+(n.y-y)**2;if(d<bd){bd=d;b=k}}});return b};
-[['commander',50,44],['builder',50,68],['sentinel',68,38],['game',30,62],['biz',38,24]].forEach(([id,x,y])=>{const k=near(x,y);AM[id]={x:nodes[k].x,y:nodes[k].y,from:k,prev:-1,to:k,wait:rnd(.2,1.5)}});
+[['commander',50,44],['builder',50,68],['sentinel',68,38],['game',30,62],['biz',38,24]].forEach(([id,x,y])=>{const k=near(x,y);AM[id]={x:nodes[k].x,y:nodes[k].y,from:k,prev:-1,to:k,wait:rnd(.2,1.5),trail:[]}});
 function nextNode(m){const nb=nodes[m.from].nb;let c=nb.filter(n=>n!==m.prev);if(!c.length)c=nb;return c.length?pick(c):m.from}
 const cars=Array.from({length:70},()=>({e:rint(0,edges.length-1),t:Math.random(),dir:Math.random()<.5?1:-1,sp:rnd(.05,.16),col:Math.random()<.5?'#ffffff':'#ff3b3b'}));
+const boats=[];for(let k=0;k<9;k++){let x,y,t=0;do{x=rnd(3,97);y=rnd(20,96);t++}while(isLand(x,y,1.1)&&t<300);boats.push({x,y,v:rnd(.5,1.4)*(Math.random()<.5?-1:1)})}
 let last=performance.now();
 function frame(now){
  const dt=Math.min(.1,(now-last)/1000);last=now;
  const sp=5*S.set.speed;
  for(const a of AG){
-  const m=AM[a.id];if(S.agents[a.id].offline)continue;
+  const m=AM[a.id];if(S.agents[a.id].offline||S.set.paused)continue;
   if(m.wait>0){m.wait-=dt;if(m.wait<=0&&m.to===m.from){m.to=nextNode(m)}continue}
   const T=nodes[m.to],dx=T.x-m.x,dy=(T.y-m.y)*1.5,d=Math.hypot(dx,dy),st=sp*dt;
   if(d<=st){m.x=T.x;m.y=T.y;m.prev=m.from;m.from=m.to;m.to=nextNode(m);m.wait=rnd(.5,2.2)}
   else{m.x+=dx/d*st;m.y+=(T.y-m.y)/d*st*1.5}
  }
  lx.clearRect(0,0,1200,640);
- if(edges.length&&S.set.anim){cars.forEach(c=>{c.t+=c.dir*c.sp*dt*S.set.speed;if(c.t>1||c.t<0){c.e=rint(0,edges.length-1);c.t=c.dir>0?0:1}const e=edges[c.e],A=nodes[e.a],B=nodes[e.b],x=(A.x+(B.x-A.x)*c.t)*12,y=(A.y+(B.y-A.y)*c.t)*6.4;lx.save();lx.shadowColor=c.col;lx.shadowBlur=8;lx.fillStyle=c.col;lx.fillRect(x-1.5,y-1.5,3,3);lx.restore()})}
+ if(S.set.anim){boats.forEach(b=>{if(!S.set.paused){const nx=b.x+b.v*dt;if(nx<1||nx>99||isLand(nx,b.y,1.04))b.v=-b.v;else b.x=nx}lx.save();lx.shadowColor='#bff';lx.shadowBlur=6;lx.fillStyle='#cfefff';lx.fillRect(b.x*12-3,b.y*6.4-1,6,2);lx.fillStyle=b.v>0?'#2dff6a':'#ff3b3b';lx.fillRect(b.x*12+(b.v>0?2:-3.5),b.y*6.4-1,1.5,2);lx.globalAlpha=.25;lx.fillStyle='#8cf';lx.fillRect(b.x*12-(b.v>0?16:-3),b.y*6.4,13,1);lx.restore()})}
+ if(edges.length&&S.set.anim){cars.forEach(c=>{c.t+=(S.set.paused?0:1)*c.dir*c.sp*dt*S.set.speed;if(c.t>1||c.t<0){c.e=rint(0,edges.length-1);c.t=c.dir>0?0:1}const e=edges[c.e],A=nodes[e.a],B=nodes[e.b],x=(A.x+(B.x-A.x)*c.t)*12,y=(A.y+(B.y-A.y)*c.t)*6.4;lx.save();lx.shadowColor=c.col;lx.shadowBlur=8;lx.fillStyle=c.col;lx.fillRect(x-1.5,y-1.5,3,3);lx.restore()})}
  for(const a of AG){
   const m=AM[a.id],off=S.agents[a.id].offline;
   const mk=$('#mk_'+a.id);if(mk){mk.style.left=m.x+'%';mk.style.top=m.y+'%'}
   const rd=$('#rd_'+a.id);if(rd){rd.style.left=(m.x)+'%';rd.style.top=(m.y)+'%'}
   if(off)continue;
-  const T=nodes[m.to];lx.save();lx.strokeStyle=a.color;lx.globalAlpha=.7;lx.lineWidth=2;lx.setLineDash([6,6]);lx.lineDashOffset=-now/40;lx.shadowColor=a.color;lx.shadowBlur=8;lx.beginPath();lx.moveTo(m.x*12,m.y*6.4);lx.lineTo(T.x*12,T.y*6.4);lx.stroke();lx.restore();
+  {const tr=m.trail,lp=tr[tr.length-1];if(!S.set.paused&&(!lp||Math.hypot(lp[0]-m.x,lp[1]-m.y)>.3)){tr.push([m.x,m.y]);if(tr.length>48)tr.shift()}if(tr.length>1){lx.save();lx.lineCap='round';lx.shadowColor=a.color;lx.shadowBlur=10;lx.strokeStyle=a.color;for(let q=1;q<tr.length;q++){lx.globalAlpha=q/tr.length*.85;lx.lineWidth=1+q/tr.length*3.5;lx.beginPath();lx.moveTo(tr[q-1][0]*12,tr[q-1][1]*6.4);lx.lineTo(tr[q][0]*12,tr[q][1]*6.4);lx.stroke()}lx.restore()}}
+  const T=nodes[m.to];lx.save();lx.strokeStyle=a.color;lx.globalAlpha=.85;lx.lineWidth=1.5;lx.beginPath();lx.arc(T.x*12,T.y*6.4,5+Math.sin(now/200)*1.5,0,7);lx.stroke();lx.restore();lx.save();lx.strokeStyle=a.color;lx.globalAlpha=.7;lx.lineWidth=2;lx.setLineDash([6,6]);lx.lineDashOffset=-now/40;lx.shadowColor=a.color;lx.shadowBlur=8;lx.beginPath();lx.moveTo(m.x*12,m.y*6.4);lx.lineTo(T.x*12,T.y*6.4);lx.stroke();lx.restore();
   if(a.id==='sentinel'){const r=14+((now/40)%46);lx.save();lx.strokeStyle=a.color;lx.globalAlpha=1-r/60;lx.lineWidth=2;lx.beginPath();lx.arc(m.x*12,m.y*6.4,r,0,7);lx.stroke();lx.restore()}
  }
  requestAnimationFrame(frame);
@@ -692,12 +712,10 @@ function clock(){const d=new Date();$('#clkT').textContent=pad(d.getHours())+':'
  
 /* ---------- boot ---------- */
 applyTheme();buildMarkers();drawCity();renderNav();$('#hArt').innerHTML=`<div style="position:absolute;right:0;bottom:-6px;width:84px;height:84px;border-radius:50% 50% 0 0;overflow:hidden;filter:drop-shadow(0 0 10px var(--g))">${portrait(AGN.commander,84)}</div>`;
-clock();setInterval(clock,10000);
-renderDyn();applyMap();startTick();requestAnimationFrame(frame);
+clock();setInterval(clock,1000);
+updPause();renderDyn();applyMap();startTick();requestAnimationFrame(frame);
 if(location.hash){const h=location.hash.slice(1);if(NAV.some(n=>n[0]===h))go(h)}
 })();
 </script>
 </body>
 </html>
- 
-Claude finished the response
