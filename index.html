@@ -682,6 +682,26 @@ function drawCity(){
  rg=g.createRadialGradient(px(76),py(62),5,px(76),py(62),140);rg.addColorStop(0,'rgba(255,60,240,.14)');rg.addColorStop(1,'rgba(255,60,240,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);g.globalCompositeOperation='source-over';
  const fg2=g.createLinearGradient(0,H*.3,0,H*.55);fg2.addColorStop(0,'rgba(20,120,110,0)');fg2.addColorStop(.5,'rgba(20,120,110,.11)');fg2.addColorStop(1,'rgba(20,120,110,0)');g.fillStyle=fg2;g.fillRect(0,H*.3,W,H*.25);
  const v=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.62);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.72)');g.fillStyle=v;g.fillRect(0,0,W,H);
+ // NEW DISTRICT LAYER — five distinct territories and a central command hub
+ const districts=[
+  {name:'AI CORE',sub:'COMMAND / MODELS',x:52,y:43,rx:13,ry:10,c:'#22e6ff'},
+  {name:'CREATOR BAY',sub:'DESIGN / BUILD',x:27,y:31,rx:12,ry:9,c:'#ff3cf0'},
+  {name:'GAME DISTRICT',sub:'PLAY / PERFORMANCE',x:31,y:69,rx:13,ry:8,c:'#ffb43c'},
+  {name:'SECURITY SECTOR',sub:'DEFENSE / AUDIT',x:72,y:34,rx:12,ry:9,c:'#18ffa0'},
+  {name:'BUSINESS HUB',sub:'OPS / GROWTH',x:73,y:68,rx:13,ry:8,c:'#4d8bff'}
+ ];
+ districts.forEach(d=>{
+  const x=px(d.x),y=py(d.y),rx=d.rx*W/100,ry=d.ry*H/100;
+  g.save();g.setLineDash([7,7]);g.strokeStyle=d.c;g.globalAlpha=.68;g.lineWidth=1.5;g.beginPath();g.ellipse(x,y,rx,ry,-.12,0,Math.PI*2);g.stroke();g.setLineDash([]);
+  const glow=g.createRadialGradient(x,y,2,x,y,rx*1.2);glow.addColorStop(0,d.c+'24');glow.addColorStop(1,d.c+'00');g.fillStyle=glow;g.beginPath();g.ellipse(x,y,rx,ry,0,0,Math.PI*2);g.fill();
+  g.globalAlpha=1;g.shadowColor=d.c;g.shadowBlur=12;g.fillStyle=d.c;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.shadowBlur=0;
+  g.font='bold 13px monospace';g.fillStyle=d.c;g.fillText(d.name,x-rx+4,y-ry+17);
+  g.font='9px monospace';g.fillStyle='rgba(220,255,245,.8)';g.fillText(d.sub,x-rx+4,y-ry+30);g.restore();
+ });
+ // Network routes connect each territory to the command core
+ g.save();g.setLineDash([4,8]);g.lineWidth=1.5;g.strokeStyle='rgba(34,230,255,.62)';
+ [[27,31,52,43],[52,43,72,34],[52,43,31,69],[52,43,73,68],[31,69,73,68]].forEach(([x1,y1,x2,y2])=>{g.beginPath();g.moveTo(px(x1),py(y1));g.lineTo(px(x2),py(y2));g.stroke()});g.restore();
+ const hx=px(52),hy=py(43);g.save();g.strokeStyle='rgba(34,230,255,.9)';g.lineWidth=1;[28,40,52].forEach(r=>{g.beginPath();g.arc(hx,hy,r,0,Math.PI*2);g.stroke()});g.beginPath();g.moveTo(hx-62,hy);g.lineTo(hx-43,hy);g.moveTo(hx+43,hy);g.lineTo(hx+62,hy);g.moveTo(hx,hy-62);g.lineTo(hx,hy-43);g.moveTo(hx,hy+43);g.lineTo(hx,hy+62);g.stroke();g.fillStyle='#dffcff';g.font='bold 11px monospace';g.fillText('ZP // COMMAND',hx+48,hy+4);g.restore();
 }
 /* live overlay */
 const live=$('#liveCv');live.width=1800;live.height=960;const lx=live.getContext('2d');lx.scale(1.5,1.5);
