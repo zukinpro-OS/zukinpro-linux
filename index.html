@@ -87,6 +87,18 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:3
 #map:active{cursor:grabbing}
 @media(max-width:600px){.mctl button{width:40px;height:40px}.coord{padding:3px 6px}.mstat{max-width:calc(100% - 100px)}}
  
+/* ecosystem home: selectable workspace modes */
+.eco-banner{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px;background:linear-gradient(110deg,rgba(24,255,160,.12),rgba(0,0,0,.25) 65%),rgba(0,0,0,.4)}
+.eco-banner h2{font-size:clamp(20px,3vw,30px);margin:5px 0}.eco-banner p{max-width:540px}
+.eco-status{font:12px 'Share Tech Mono',monospace;color:var(--dim);white-space:nowrap}.eco-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);margin-right:6px}
+.eco-heading{font:700 13px Orbitron,sans-serif;letter-spacing:1.2px;color:var(--g);margin:18px 0 9px}
+.eco-mode{position:relative;min-height:128px;transition:border-color .15s,transform .15s;text-align:left}
+.eco-mode:hover,.eco-tool:hover{border-color:var(--g);transform:translateY(-2px)}
+.eco-mode.selected{border-color:var(--g);background:linear-gradient(135deg,rgba(24,255,160,.16),rgba(0,0,0,.4));box-shadow:0 0 14px rgba(24,255,160,.12) inset}
+.eco-mode h3{padding-right:20px}.eco-mode p{line-height:1.3}.eco-check{position:absolute;right:12px;top:10px;color:var(--g);font:700 18px Orbitron}
+.eco-open{display:block;margin-top:12px;color:var(--g);font:11px 'Share Tech Mono',monospace}
+.eco-tool{min-height:76px;text-align:left}
+@media(max-width:600px){.eco-banner{align-items:flex-start;flex-direction:column}.eco-status{white-space:normal}.eco-mode{min-height:115px}.eco-heading{margin-top:15px}}
 /* generic views */
 .view{padding:14px;min-height:560px}
 .grid{display:grid;gap:10px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -318,7 +330,7 @@ function defaults(){
   agents:{commander:{offline:false,queue:[q('Optimize workflow',20,15),q('Weekly strategy review',12,0)]},builder:{offline:false,queue:[q('Website + AI Tools',20,12),q('Deploy ZUKINPRO OS v1.0',15,0)]},sentinel:{offline:false,queue:[q('System scan & protect',20,18)]},game:{offline:false,queue:[q('NFS Underground',20,9)]},biz:{offline:false,queue:[q('Find USD clients',20,7)]}},
   logs:[{ts:m(15),a:'COMMANDER',m:'Strategy updated — focus: Growth & Freedom'},{ts:m(12),a:'BIZ AGENT',m:'Client search task idle'},{ts:m(7),a:'GAME MASTER',m:'Session for NFS Underground queued (no game started)'},{ts:m(4),a:'SENTINEL',m:'Scan task finished (simulated, no real scan)'},{ts:m(2),a:'BUILDER',m:'Finished project setup'},{ts:now,a:'SYSTEM',m:'DEMO MODE — agent activity is simulated'}],
   ticks:1000,on:994,
-  set:{user:'Feiz',accent:'#18ffa0',speed:1,auto:true,anim:true,paused:false},
+  set:{user:'Feiz',accent:'#18ffa0',speed:1,auto:true,anim:true,paused:false,mode:'all'},
   games:[{n:'NFS Underground',s:'Ready'},{n:'GTA San Andreas',s:'Installed'},{n:'Minecraft',s:'Installed'}],
   perf:{bg:true,low:true,fps:false,gov:false,ram:true},
   proj:[{n:'ZUKINPRO OS Website',p:40},{n:'AI Tools Hub',p:15},{n:'Custom Plymouth Boot Splash',p:70}],
@@ -397,10 +409,14 @@ const head=(t,s)=>`<div class="vh"><div><h2 class="orb">${t}</h2><p class="dim">
 function vHome(){
  const w=AG.map(a=>`<div class="card" style="--ac:${a.color}"><div class="row">${portrait(a,40)}<div><b class="orb sm">${a.name}</b><div class="dim sm">${status(a.id)} · ${prog(a.id)}%</div></div></div></div>`).join('');
  const won=S.leads.filter(l=>l.stage===3).reduce((n,l)=>n+l.val,0);
- return head('WELCOME BACK, '+esc(S.set.user).toUpperCase(),'Dream. Plan. Build. Execute.')+
- `<div class="grid g4"><div class="card"><h3>AGENTS ONLINE</h3><div class="big">${online()}/5</div></div><div class="card"><h3>RUNNING TASKS</h3><div class="big">${tasks()}</div></div><div class="card"><h3>UPTIME</h3><div class="big">${uptime()}</div></div><div class="card"><h3>REVENUE WON</h3><div class="big">$${won}</div></div></div>
- <div class="grid g3" style="margin-top:10px">${w}</div>
- <div class="grid g4" style="margin-top:10px">${NAV.slice(1).map(n=>`<button class="card" data-act="nav" data-v="${n[0]}"><h3>${n[1].toUpperCase()}</h3><span class="dim sm">Open ›</span></button>`).join('')}</div>`;
+ const modes=[['all','EVERYDAY','A balanced workspace for general use.','home'],['creator','CREATOR','Build projects, websites, and content.','dev'],['ai','AI WORKSPACE','Focus on agents, tasks, and automation.','agents'],['gaming','GAMING','Games and performance tools in one place.','games'],['security','SECURITY','System health and defensive security tools.','cyber']];
+ const mode=S.set.mode||'all';
+ return head('YOUR ZUKINPRO ECOSYSTEM','One workspace. Choose your mode. Your setup stays on this device.')+
+ `<div class="eco-banner card"><div><div class="dim sm mono">PERSONAL WORKSPACE / ${esc(S.set.user).toUpperCase()}</div><h2 class="orb">WELCOME TO ZUKINPRO</h2><p class="dim">Choose a mode to shape your workspace. You can switch whenever you want.</p></div><div class="eco-status"><span class="eco-dot"></span> LOCAL PROTOTYPE · DEMO</div></div>
+ <h3 class="eco-heading">CHOOSE YOUR MODE</h3><div class="grid g3 eco-modes">${modes.map(([id,title,desc,target])=>`<button class="card eco-mode ${mode===id?'selected':''}" data-act="mode" data-mode="${id}" data-target="${target}"><span class="eco-check">${mode===id?'✓':'+'}</span><h3>${title}</h3><p class="dim sm">${desc}</p><span class="eco-open">${mode===id?'ACTIVE MODE':'ACTIVATE MODE'} ↗</span></button>`).join('')}</div>
+ <h3 class="eco-heading">WORKSPACE OVERVIEW</h3><div class="grid g4"><div class="card"><h3>AGENTS ONLINE</h3><div class="big">${online()}/5</div></div><div class="card"><h3>RUNNING TASKS</h3><div class="big">${tasks()}</div></div><div class="card"><h3>UPTIME</h3><div class="big">${uptime()}</div></div><div class="card"><h3>REVENUE WON</h3><div class="big">${won}</div></div></div>
+ <h3 class="eco-heading">CONNECTED TOOLS</h3><div class="grid g3 eco-tools">${NAV.slice(1).map(n=>`<button class="card eco-tool" data-act="nav" data-v="${n[0]}"><h3>${n[1].toUpperCase()}</h3><span class="dim sm">Open workspace →</span></button>`).join('')}</div>
+ <h3 class="eco-heading">AGENT STATUS <span class="dim sm">· simulated demo activity</span></h3><div class="grid g3">${w}</div>`;
 }
 function vGames(){
  const pf=[['bg','Close background apps before playing'],['low','Use a low graphics preset (4 GB RAM laptop)'],['fps','Cap FPS at 30 to reduce heat'],['gov','Set CPU governor to performance (Linux)'],['ram','Check free RAM first (htop)']];
@@ -562,6 +578,7 @@ document.addEventListener('click',e=>{
  if(dragMoved&&t.closest('#map')){dragMoved=false;return}
  const d=t.dataset,act=d.act,i=+d.i;
  switch(act){
+  case'mode':S.set.mode=d.mode||'all';save();log('SYSTEM','Workspace mode changed to '+String(S.set.mode).toUpperCase(),true);go('home');break;
   case'nav':go(d.v);break;
   case'pause':S.set.paused=!S.set.paused;log('SYSTEM','Simulation '+(S.set.paused?'paused':'resumed'));save();updPause();renderDyn();break;
   case'close':closeModal();break;
@@ -606,6 +623,7 @@ document.addEventListener('submit',e=>{
   case'addlead':S.leads.push({name:v.name.trim(),svc:v.svc.trim(),val:Math.max(0,+v.val||0),stage:0});log('BIZ AGENT','New lead: '+v.name.trim(),true);save();renderView();renderDyn();break;
   case'draft':$('#draftOut').value=`Hi ${v.who},\n\nI'm ${S.set.user} from ZUKINPRO. I came across ${v.biz} and think it could benefit from ${v.svc}. I help small businesses with quick, affordable ${v.svc} and would love to show you a few ideas.\n\nWould you be open to a short chat this week?\n\nBest regards,\n${S.set.user}`;log('BIZ AGENT','Template outreach draft generated for '+v.biz,true);save();renderDyn();break;
   case'addfit':S.fit.log.push({d:today(),ex:v.ex.trim(),min:Math.max(1,+v.min||1)});save();renderView();break;
+  case'mode':S.set.mode=v.mode||'all';save();renderView();break;
   case'settings':S.set.user=(v.user||'Feiz').trim()||'Feiz';S.set.accent=v.accent;S.set.speed=+v.speed;S.set.auto=!!v.auto;S.set.anim=!!v.anim;save();applyTheme();startTick();drawCity();renderDyn();renderView();break;
  }
 });
