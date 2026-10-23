@@ -1,283 +1,180 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#050807">
-
-<title>ZUKINPRO Creator Hub</title>
-
+<meta name="theme-color" content="#050a08">
+<title>ZUKINPRO | Ghost Protocol</title>
 <style>
-:root {
-  --bg: #050807;
-  --panel: #101713;
-  --green: #39ff88;
-  --muted: #9aaba0;
-  --border: #26382c;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: #f0fff4;
-  font-family: system-ui, Arial, sans-serif;
-}
-
-header {
-  padding: 22px;
-  border-bottom: 1px solid var(--border);
-}
-
-.logo {
-  color: var(--green);
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-
-header p {
-  color: var(--muted);
-  margin-bottom: 0;
-  font-size: 13px;
-}
-
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 20px;
-}
-
-.status {
-  color: var(--green);
-  font-size: 12px;
-  margin-bottom: 12px;
-}
-
-h1 {
-  font-size: clamp(27px, 6vw, 42px);
-  margin: 8px 0;
-}
-
-.intro {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 25px;
-}
-
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 17px;
-}
-
-.card .icon {
-  font-size: 27px;
-}
-
-.card h2 {
-  font-size: 17px;
-}
-
-.card p {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-button {
-  background: var(--green);
-  color: #041008;
-  border: 0;
-  border-radius: 8px;
-  padding: 11px 14px;
-  font-weight: 750;
-  cursor: pointer;
-  width: 100%;
-}
-
-button.secondary {
-  background: #1b2920;
-  color: var(--green);
-  border: 1px solid var(--border);
-}
-
-.ai {
-  margin-top: 18px;
-  padding: 18px;
-  background: #0b1510;
-  border: 1px solid #285438;
-  border-radius: 14px;
-}
-
-.ai h2 {
-  color: var(--green);
-  font-size: 18px;
-}
-
-input {
-  width: 100%;
-  margin: 10px 0;
-  padding: 13px;
-  border-radius: 8px;
-  background: #050807;
-  border: 1px solid var(--border);
-  color: white;
-  font-size: 15px;
-}
-
-#result {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
-footer {
-  padding: 25px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-@media (max-width: 450px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  main {
-    padding: 15px;
-  }
-}
+:root{--g:#39ff88;--bg:#050a08;--panel:#0b1511;--line:#21432f;--muted:#9ab3a3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#eaffef;font-family:Arial,sans-serif}
+header{padding:20px;border-bottom:1px solid var(--line);background:#08110c;position:sticky;top:0;z-index:5}
+.logo{font-size:23px;font-weight:900;letter-spacing:2px;color:var(--g)}
+.sub{font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:6px}
+nav{display:flex;gap:8px;overflow-x:auto;padding-top:17px}
+button{cursor:pointer;border:1px solid var(--line);background:#102017;color:var(--g);padding:11px;border-radius:7px;font-weight:bold}
+nav button{white-space:nowrap}
+button:hover{background:#193b27}
+main{max-width:1050px;margin:auto;padding:18px}
+.hero{padding:23px 18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#10291b,#07100c 65%,#12301d);position:relative;overflow:hidden}
+.tag{font-size:11px;color:var(--g);letter-spacing:2px}
+h1{font-size:clamp(27px,6vw,43px);margin:12px 0}
+p{line-height:1.5}
+.muted{color:var(--muted);font-size:13px}
+.city{height:175px;display:flex;align-items:end;justify-content:center;gap:5px;overflow:hidden;border-bottom:2px solid var(--g);margin:15px 0 20px;background:repeating-linear-gradient(90deg,transparent 0 38px,#123321 39px 40px),linear-gradient(#07130d,#0a1b10)}
+.building{width:13%;border:1px solid #28553a;background:repeating-linear-gradient(0deg,#10271a 0 12px,#39ff8825 13px 14px);box-shadow:0 0 12px #39ff8820}
+.b1{height:55%}.b2{height:85%}.b3{height:68%}.b4{height:100%}.b5{height:47%}.b6{height:77%}
+.section-title{color:var(--g);letter-spacing:2px;font-size:15px;margin:25px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.card{padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:11px;min-width:0}
+.agent{display:flex;gap:11px;align-items:center}
+.avatar{width:43px;height:43px;flex-shrink:0;display:grid;place-items:center;background:#163522;border:1px solid var(--g);border-radius:9px;font-size:23px}
+.agent h3{font-size:14px;margin:0 0 5px}
+.agent p{font-size:11px;color:var(--muted);margin:0}
+.status{font-size:10px;color:var(--g);margin-top:10px}
+.card button{width:100%;margin-top:12px;font-size:12px}
+input,select,textarea{width:100%;background:#050b07;border:1px solid var(--line);color:white;padding:12px;border-radius:7px;margin:6px 0 12px;font-size:14px}
+label{font-size:12px;color:var(--muted)}
+.action{width:100%;background:var(--g);color:#041008;border:0}
+#log{font-size:13px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+.wide{margin-top:12px}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:11px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.city{height:220px}}
 </style>
 </head>
-
 <body>
-
 <header>
-  <div class="logo">ZUKINPRO OS</div>
-  <p>ONE SYSTEM. LIMITLESS POSSIBILITIES.</p>
+  <div class="logo">ZUKINPRO<span style="color:white"> OS</span></div>
+  <div class="sub">GHOST PROTOCOL // COMMAND CENTER</div>
+  <nav>
+    <button onclick="go('agents')">AI WORLD</button>
+    <button onclick="go('tasks')">TASKS</button>
+    <button onclick="go('modes')">OPERATIONS</button>
+  </nav>
 </header>
 
 <main>
+<section class="hero">
+  <div class="tag">● SYSTEM ONLINE // PROTOTYPE</div>
+  <h1>ENTER THE<br><span style="color:var(--g)">GHOST WORLD.</span></h1>
+  <p class="muted">One command center. Multiple agents. Your digital world, connected.</p>
+  <div class="city" aria-label="Abstract neon cyberpunk city">
+    <div class="building b1"></div><div class="building b2"></div>
+    <div class="building b3"></div><div class="building b4"></div>
+    <div class="building b5"></div><div class="building b6"></div>
+  </div>
+  <button onclick="go('agents')">ENTER AI WORLD →</button>
+</section>
 
-  <div class="status">● CREATOR HUB · PROTOTYPE</div>
+<h2 class="section-title" id="agents">YOUR AI AGENTS</h2>
+<p class="muted">Select a character to assign a task or inspect its demo status.</p>
 
-  <h1>Your digital world.</h1>
+<div class="grid">
+  <article class="card">
+    <div class="agent"><div class="avatar">👑</div><div><h3>COMMANDER</h3><p>Planning & coordination</p></div></div>
+    <div class="status" id="s0">● STANDBY</div>
+    <button onclick="choose('Commander','s0')">SELECT AGENT</button>
+  </article>
+  <article class="card">
+    <div class="agent"><div class="avatar">🛠️</div><div><h3>BUILDER</h3><p>Projects & development</p></div></div>
+    <div class="status" id="s1">● STANDBY</div>
+    <button onclick="choose('Builder','s1')">SELECT AGENT</button>
+  </article>
+  <article class="card">
+    <div class="agent"><div class="avatar">🛡️</div><div><h3>SENTINEL</h3><p>Authorized security checks</p></div></div>
+    <div class="status" id="s2">● STANDBY</div>
+    <button onclick="choose('Sentinel','s2')">SELECT AGENT</button>
+  </article>
+  <article class="card">
+    <div class="agent"><div class="avatar">🎮</div><div><h3>GAME MASTER</h3><p>Gaming & compatibility</p></div></div>
+    <div class="status" id="s3">● STANDBY</div>
+    <button onclick="choose('Game Master','s3')">SELECT AGENT</button>
+  </article>
+  <article class="card">
+    <div class="agent"><div class="avatar">💼</div><div><h3>BIZ AGENT</h3><p>Business workflows</p></div></div>
+    <div class="status" id="s4">● STANDBY</div>
+    <button onclick="choose('Biz Agent','s4')">SELECT AGENT</button>
+  </article>
+</div>
 
-  <p class="intro">
-    Gaming, livestreaming, content creation and security
-    brought together in one intelligent environment.
-  </p>
+<section id="tasks" class="card wide">
+  <h2 class="section-title">MISSION CONTROL</h2>
+  <p class="muted">Choose an agent, describe the mission, then assign it.</p>
+  <label for="agent">ASSIGNED AGENT</label>
+  <select id="agent">
+    <option>Commander</option><option>Builder</option>
+    <option>Sentinel</option><option>Game Master</option>
+    <option>Biz Agent</option>
+  </select>
+  <label for="mission">MISSION DETAILS</label>
+  <textarea id="mission" rows="3" placeholder="Example: Plan my first livestream..."></textarea>
+  <button class="action" onclick="assign()">ASSIGN MISSION</button>
+  <h3 style="font-size:13px">MISSION LOG</h3>
+  <div id="log" aria-live="polite">No missions assigned yet.</div>
+</section>
 
-  <section class="grid">
-
-    <article class="card">
-      <div class="icon">🎮</div>
-      <h2>Play Mode</h2>
-      <p>Discover games and prepare your gaming environment.</p>
-      <button onclick="openMode('Play Mode')">
-        Explore gaming
-      </button>
-    </article>
-
-    <article class="card">
-      <div class="icon">📡</div>
-      <h2>Stream Mode</h2>
-      <p>Prepare IRL streams, Twitch broadcasts and live video.</p>
-      <button onclick="openMode('Stream Mode')">
-        Prepare a stream
-      </button>
-    </article>
-
-    <article class="card">
-      <div class="icon">🎬</div>
-      <h2>Creator Mode</h2>
-      <p>Organise recordings, highlights and content ideas.</p>
-      <button onclick="openMode('Creator Mode')">
-        Create content
-      </button>
-    </article>
-
-    <article class="card">
-      <div class="icon">🛡️</div>
-      <h2>Security Engine</h2>
-      <p>Plan authorised security checks and understand results.</p>
-      <button onclick="openMode('Security Engine')">
-        Explore security
-      </button>
-    </article>
-
-  </section>
-
-  <section class="ai">
-    <h2>🥷 ZUKINPRO AI ASSISTANT</h2>
-
-    <p class="intro">
-      What would you like your digital assistant to help you with?
-    </p>
-
-    <form id="commandForm">
-      <input
-        id="command"
-        type="text"
-        placeholder="e.g. Prepare my first livestream"
-        aria-label="Describe your task"
-        required
-      >
-
-      <button type="submit">Submit command</button>
-    </form>
-
-    <p id="result" aria-live="polite">
-      System ready. Enter a task to see a demonstration.
-    </p>
-  </section>
-
+<h2 class="section-title" id="modes">OPERATION ZONES</h2>
+<div class="grid">
+  <div class="card"><h3>🎮 Gaming</h3><p class="muted">Game discovery and setup.</p><button onclick="zone('Gaming')">OPEN ZONE</button></div>
+  <div class="card"><h3>📡 Streaming</h3><p class="muted">IRL, Twitch and live creator workflows.</p><button onclick="zone('Streaming')">OPEN ZONE</button></div>
+  <div class="card"><h3>🛡️ Cybersecurity</h3><p class="muted">Authorized security assessments.</p><button onclick="zone('Cybersecurity')">OPEN ZONE</button></div>
+  <div class="card"><h3>💻 Development</h3><p class="muted">Build projects and applications.</p><button onclick="zone('Development')">OPEN ZONE</button></div>
+  <div class="card"><h3>💼 Business</h3><p class="muted">Organize business workflows.</p><button onclick="zone('Business')">OPEN ZONE</button></div>
+  <div class="card"><h3>🤖 AI Lab</h3><p class="muted">Design future AI integrations.</p><button onclick="zone('AI Lab')">OPEN ZONE</button></div>
+</div>
+<footer>ZUKINPRO OS · GHOST PROTOCOL<br>EARLY PROTOTYPE — NOT A FULL OPERATING SYSTEM</footer>
 </main>
 
-<footer>
-  ZUKINPRO OS · EARLY DEVELOPMENT<br>
-  A Linux-based project in development.
-</footer>
-
 <script>
-function openMode(mode) {
-  document.getElementById("result").textContent =
-    mode + " selected. This prototype demonstrates the interface. " +
-    "Real integrations will be added and tested during development.";
-  document.getElementById("command").value =
-    "Help me with " + mode;
+let selected = "Commander";
+let missions = [];
+
+function go(id) {
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
 }
 
-document.getElementById("commandForm").addEventListener(
-  "submit",
-  function(event) {
-    event.preventDefault();
+function choose(name, statusId) {
+  selected = name;
+  document.getElementById("agent").value = name;
+  document.getElementById(statusId).textContent = "● SELECTED";
+  document.getElementById("log").textContent =
+    name + " selected.\nChoose a mission below to continue.";
+  go("tasks");
+}
 
-    const command =
-      document.getElementById("command").value.trim();
-
-    if (!command) return;
-
-    document.getElementById("result").textContent =
-      "Demo received: " + command +
-      ". No external actions were performed. " +
-      "A future AI engine will analyse tasks, " +
-      "propose a plan and request approval when needed.";
+function assign() {
+  const name = document.getElementById("agent").value;
+  const task = document.getElementById("mission").value.trim();
+  if (!task) {
+    document.getElementById("log").textContent =
+      "Enter a mission description first.";
+    return;
   }
-);
-</script>
+  missions.unshift({name,task});
+  document.getElementById("log").textContent =
+    missions.map((m,i) =>
+      (i+1)+". ["+m.name+"] "+m.task+
+      "\nStatus: DEMO ASSIGNED — no real task executed."
+    ).join("\n\n");
+  document.getElementById("mission").value = "";
+  const ids = {"Commander":"s0","Builder":"s1","Sentinel":"s2","Game Master":"s3","Biz Agent":"s4"};
+  document.getElementById(ids[name]).textContent = "● MISSION ASSIGNED (DEMO)";
+}
 
+function zone(name) {
+  document.getElementById("agent").value =
+    name === "Cybersecurity" ? "Sentinel" :
+    name === "Gaming" ? "Game Master" :
+    name === "Business" ? "Biz Agent" :
+    name === "Development" || name === "AI Lab" ? "Builder" : "Commander";
+  document.getElementById("mission").value =
+    "Help me plan my " + name + " workflow.";
+  document.getElementById("log").textContent =
+    name + " zone selected. Describe your mission and assign an agent.";
+  go("tasks");
+}
+</script>
 </body>
 </html>
