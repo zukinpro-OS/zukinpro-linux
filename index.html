@@ -78,6 +78,15 @@ select option{background:#04120e}
 .radar i{position:absolute;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:var(--ac);box-shadow:0 0 6px var(--ac)}
 .mstat{position:absolute;left:136px;bottom:8px;background:rgba(0,0,0,.75);border:1px solid var(--g2);border-radius:6px;padding:7px 12px;font-size:15px;line-height:1.5;z-index:6;pointer-events:none}
 .mstat b{color:var(--g);font-weight:600}
+/* cinematic HUD polish: scanlines, edge vignette, keyboard focus and touch targets */
+#map{isolation:isolate}
+#map::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(180,255,220,.035) 0,rgba(180,255,220,.035) 1px,transparent 1px,transparent 4px),radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.34) 100%);mix-blend-mode:screen;opacity:.62}
+#map::before{content:"";position:absolute;inset:8px;z-index:2;pointer-events:none;border:1px solid rgba(24,255,160,.13);background:linear-gradient(90deg,transparent 49.9%,rgba(24,255,160,.08) 50%,transparent 50.1%),linear-gradient(transparent 49.9%,rgba(24,255,160,.06) 50%,transparent 50.1%);background-size:100% 100%;opacity:.6}
+button:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:3px}
+.mctl button{min-width:38px;min-height:38px}
+#map:active{cursor:grabbing}
+@media(max-width:600px){.mctl button{width:40px;height:40px}.coord{padding:3px 6px}.mstat{max-width:calc(100% - 100px)}}
+ 
 /* generic views */
 .view{padding:14px;min-height:560px}
 .grid{display:grid;gap:10px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
